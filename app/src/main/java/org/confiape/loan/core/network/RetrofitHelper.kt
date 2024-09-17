@@ -2,6 +2,7 @@ package org.confiape.loan.core.network
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,13 +26,12 @@ object NetworkModule {
     @Singleton
     fun provideApiClient(@ApplicationContext context: Context): ApiClient {
 
-        val okHttpClient =
-            OkHttpClient.Builder().addInterceptor(ReceivedCookiesInterceptor(context))
-                .addInterceptor(AuthorizationInterceptor(context))
+        val okHttpClient = OkHttpClient.Builder().addInterceptor(AuthorizationInterceptor(context))
 
         val response = ApiClient(
             baseUrl = AppConstants.BaseUrl, okHttpClient
         )
+
         return response
     }
 
@@ -40,6 +40,7 @@ object NetworkModule {
     fun provideAuthenticateApi(apiClient: ApiClient): AuthenticateApi {
         return apiClient.createService(AuthenticateApi::class.java)
     }
+
     @Provides
     @Singleton
     fun provideLoanApi(apiClient: ApiClient): LoanApi {
@@ -49,35 +50,12 @@ object NetworkModule {
 }
 
 
-class ReceivedCookiesInterceptor(private val context: Context) : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response {
-
-        val originalResponse = chain.proceed(chain.request())
-        if (chain.request().url.toString()
-                .contains("/api/Authenticate/LogIn") && originalResponse.headers("Set-Cookie")
-                .isNotEmpty()
-        ) {
-            val cookies = originalResponse.headers("Set-Cookie")
-
-            for (cookie in cookies) {
-                if (cookie.startsWith("AuthenticationToken=")) {
-                    val token = cookie.split(";")[0]
-                    saveToken(context, AppConstants.AuthenticationToken, token)
-
-                }
-            }
-        }
-
-        return originalResponse
-    }
-
-
-}
-
 fun saveToken(context: Context, name: String, token: String) {
     val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+
     val editor = sharedPreferences.edit()
+
     editor.putString(name, token)
     editor.apply()
 }
@@ -86,51 +64,73 @@ fun getToken(name: String, context: Context): String {
     val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
 
-    return sharedPreferences.getString(AppConstants.AuthenticationToken, null) ?: ""
+    return sharedPreferences.getString(name, null) ?: ""
 }
 
-class AuthorizationInterceptor(private val context: Context) :
-    Interceptor {
+class AuthorizationInterceptor(private val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
-            .newBuilder()
-            .addHeader(
-                "Authorization",
-                "Bearer " + getToken(AppConstants.AuthorizationToken, context)
-            )
-            .build()
 
+        val request = chain.request().newBuilder().addHeader(
+            "Authorization", "Bearer " + getToken(AppConstants.AuthorizationToken, context)
+        ).build()
+        Log.i(AppConstants.Tag, "Start Interceptor with token ${getToken(AppConstants.AuthorizationToken, context)}")
         val originalResponse = chain.proceed(request)
-        if (originalResponse.code == 401) {
 
-            val service =
-                ApiClient(
-                    AppConstants.BaseUrl,
-                    OkHttpClient.Builder().addInterceptor { internalChain ->
-                        internalChain.proceed(
-                            internalChain.request().newBuilder()
-                                .addHeader(
-                                    "Cookie",
-                                    getToken(AppConstants.AuthenticationToken, context)
-                                )
-                                .build()
-                        )
-                    }).createService(AuthenticateApi::class.java)
+        Log.i(
+            AppConstants.Tag,
+            "First request with uri ${originalResponse.request.url} status ${originalResponse.code} "
+        )
+        if (chain.request().url.toString()
+                .contains("/api/Authenticate/LoginWithGoogleToken") && originalResponse.headers("Set-Cookie")
+                .isNotEmpty()
+        ) {
+
+            val cookies = originalResponse.headers("Set-Cookie")
+
+            for (cookie in cookies) {
+                if (cookie.startsWith("AuthenticationToken=")) {
+                    val token = cookie.split(";")[0]
+                    saveToken(context, AppConstants.AuthenticationToken, token)
+                    Log.i(
+                        AppConstants.Tag,
+                        "is LoginWithGoogleToken with token $token "
+                    )
+                }
+            }
+        }
+
+
+        if (originalResponse.code == 401) {
+            Log.i(
+                AppConstants.Tag,
+                "Is code 401"
+            )
+            val service = ApiClient(AppConstants.BaseUrl,
+                OkHttpClient.Builder().addInterceptor { internalChain ->
+                    internalChain.proceed(
+                        internalChain.request().newBuilder().addHeader(
+                            "Cookie", getToken(AppConstants.AuthenticationToken, context)
+                        ).build()
+                    )
+                }).createService(AuthenticateApi::class.java)
 
             val newToken = runBlocking {
                 service.apiAuthenticateGetAuthorizationTokenPost()
             }
+
             saveToken(context, AppConstants.AuthorizationToken, newToken.body()!!.accessToken ?: "")
 
             originalResponse.close()
+            Log.i(
+                AppConstants.Tag,
+                "New token ${"Bearer " + getToken(AppConstants.AuthorizationToken, context)}"
+            )
 
-            return chain.proceed(chain.request()).newBuilder()
-                .removeHeader("Authorization")
+            val res= chain.proceed(chain.request().newBuilder()
                 .addHeader(
-                    "Authorization",
-                    "Bearer " + getToken(AppConstants.AuthorizationToken, context)
-                )
-                .build()
+                    "Authorization", "Bearer " + getToken(AppConstants.AuthorizationToken, context)
+                ).build())
+            return res;
         }
         return originalResponse;
     }

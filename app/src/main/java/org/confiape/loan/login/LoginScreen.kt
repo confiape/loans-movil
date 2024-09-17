@@ -40,12 +40,12 @@ fun LoginScreen(viewModel: LoginViewModel) {
                 val credential = result.credential
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                 val googlIdToken = googleIdTokenCredential.idToken
-
+                viewModel.Clean()
                 val loans=viewModel.LoginByGoogleToken(googlIdToken)
 
                 Log.i(TAG, googlIdToken)
 
-                Toast.makeText(context, "You are signed ${loans!!.result!!.size}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "You are signed ${loans!!.name}", Toast.LENGTH_SHORT).show()
             } catch (e: GetCredentialException) {
                 Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
             } catch (e: GoogleIdTokenParsingException) {
