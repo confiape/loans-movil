@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MultiChoiceSegmentedButtonRow
@@ -36,6 +38,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @Composable
 fun BorrowerScreen(borrowerViewModel: BorrowerViewModel) {
@@ -136,21 +140,24 @@ fun BorrowerListItem(borrower: BasicBorrowerClientWithTagsAndLoans) {
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
         }
-        Row {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
             borrower.loans!!.forEachIndexed { _, loan ->
                 val amount = loan.amount!!.plus(loan.amount * loan.interest!! / 100)
                 TextButton(onClick = { /*TODO*/ }) {
                     Column {
                         Text(text = "S/. $amount")
-//                        Text(text = java.time.format.DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(loan.dateTime))
+                        Text(text = DateTimeFormatter.ofPattern("dd MMMM").format(loan.dateTime))
                     }
                 }
             }
-
+            Spacer(modifier = Modifier.weight(1f))
             OutlinedButton(onClick = { /*TODO*/ }) {
                 Text(text = "+")
             }
         }
+        HorizontalDivider()
 
     }
 }
