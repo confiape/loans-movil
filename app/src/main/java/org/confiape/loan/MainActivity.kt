@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.confiape.loan.borrowers.BorrowerScreen
-import org.confiape.loan.borrowers.BorrowerViewModel
+import org.confiape.loan.borrowers.BorrowersViewModel
 import org.confiape.loan.core.Routes
 import org.confiape.loan.login.LoginScreen
 import org.confiape.loan.login.LoginViewModel
@@ -22,7 +22,7 @@ class MainActivity @Inject constructor(
 
 ) : ComponentActivity() {
     private val loginViewModel: LoginViewModel by viewModels();
-    private val borrowerViewModel: BorrowerViewModel by viewModels();
+    private val borrowerViewModel: BorrowersViewModel by viewModels();
 
     override fun onCreate(savedInstanceState: Bundle?) {
 

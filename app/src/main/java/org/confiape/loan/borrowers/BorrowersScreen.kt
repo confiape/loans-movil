@@ -39,12 +39,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 @Composable
-fun BorrowerScreen(borrowerViewModel: BorrowerViewModel) {
+fun BorrowerScreen(borrowerViewModel: BorrowersViewModel) {
     val options = borrowerViewModel.tags
-
+    AddBorrowerScreen(borrowerViewModel.showAddBorrowerScreen,{
+        borrowerViewModel.activateAddBorrowerScreen(false)
+    })
     Scaffold(topBar = {
         TopAppBar(colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -53,7 +54,7 @@ fun BorrowerScreen(borrowerViewModel: BorrowerViewModel) {
             Text("Prestamos")
         })
     }, bottomBar = { BottomBar() },
-        floatingActionButton = { FloatingActionButtonToAddBorrower() }) { innerPadding ->
+        floatingActionButton = { FloatingActionButtonToAddBorrower(borrowerViewModel) }) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -113,14 +114,14 @@ fun BottomBar() {
 }
 
 @Composable
-fun FloatingActionButtonToAddBorrower() {
-    FloatingActionButton(onClick = { }) {
+fun FloatingActionButtonToAddBorrower(borrowerViewModel: BorrowersViewModel) {
+    FloatingActionButton(onClick = {borrowerViewModel.activateAddBorrowerScreen(true) }) {
         Icon(Icons.Default.Add, contentDescription = "Add")
     }
 }
 
 @Composable
-fun ClientList(borrowerViewModel: BorrowerViewModel) {
+fun ClientList(borrowerViewModel: BorrowersViewModel) {
 
 
     LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
