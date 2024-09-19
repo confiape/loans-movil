@@ -5,15 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.confiape.loan.borrowers.BorrowerScreen
+import org.confiape.loan.borrowers.BorrowerViewModel
 import org.confiape.loan.core.Routes
 import org.confiape.loan.login.LoginScreen
 import org.confiape.loan.login.LoginViewModel
@@ -25,25 +22,21 @@ class MainActivity @Inject constructor(
 
 ) : ComponentActivity() {
     private val loginViewModel: LoginViewModel by viewModels();
+    private val borrowerViewModel: BorrowerViewModel by viewModels();
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
             LoanTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val navigationController = rememberNavController()
-                    NavHost(navController = navigationController, startDestination = Routes.Login.route) {
-                        composable(Routes.Login.route) { LoginScreen(loginViewModel, navigationController) }
-                        composable(Routes.Borrower.route) { BorrowerScreen(navigationController) }
-                    }
-
-
+                val navigationController = rememberNavController()
+                NavHost(navController = navigationController, startDestination = Routes.Login.route) {
+                    composable(Routes.Login.route) { LoginScreen(loginViewModel, navigationController) }
+                    composable(Routes.Borrower.route) { BorrowerScreen(borrowerViewModel) }
                 }
+
             }
         }
 

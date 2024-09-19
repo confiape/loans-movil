@@ -1,73 +1,54 @@
 package org.confiape.loan.login
 
-import android.content.ContentValues.TAG
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
-import androidx.credentials.exceptions.GetCredentialException
 import androidx.navigation.NavHostController
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import kotlinx.coroutines.launch
+import org.confiape.loan.core.AppConstants
 import org.confiape.loan.core.Routes
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel, navigationController: NavHostController) {
-
-    if(viewModel.IsAuthenticated()){
-        navigationController.navigate(Routes.Borrower.route)
+    Log.i(AppConstants.Tag,"Init login screen")
+    val isAlreadyNavigating = remember { mutableStateOf(false) }
+    if (viewModel.state.isAuthenticated && !isAlreadyNavigating.value) {
+        isAlreadyNavigating.value = true
+        navigationController.navigate(Routes.Borrower.route){
+            popUpTo(Routes.Login.route) { inclusive = true }
+        }
         return
     }
-
-    val context = LocalContext.current;
-    val coroutineScope = rememberCoroutineScope()
-    val onCLick: () -> Unit = {
-        val credentialsManger = CredentialManager.create(context);
-        val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
-            .setFilterByAuthorizedAccounts(false)
-            .setServerClientId("968556857827-9k652ictsdusamhl8t48nqat2j90cnkr.apps.googleusercontent.com")
-            .build();
-        val request: GetCredentialRequest = GetCredentialRequest.Builder()
-            .addCredentialOption(googleIdOption)
-            .build();
-        coroutineScope.launch {
-            try {
-                val result = credentialsManger.getCredential(
-                    request = request,
-                    context = context
-                )
-                val credential = result.credential
-                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-                val googlIdToken = googleIdTokenCredential.idToken
-
-                val loans = viewModel.LoginByGoogleToken(googlIdToken)
-
-                Toast.makeText(context, "You are signed ${loans!!.name}", Toast.LENGTH_SHORT).show()
-                navigationController.navigate(Routes.Borrower.route)
-            } catch (e: GetCredentialException) {
-                Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
-            } catch (e: GoogleIdTokenParsingException) {
-                Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+    if (viewModel.state.isLogging) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else {
+        val context = LocalContext.current
+        Surface(
+            modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(onClick = { viewModel.authenticateWithGoogle(context,navigationController) }) {
+                    Text("SigIn with Google")
+                }
             }
         }
+    }
 
-    }
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = onCLick) {
-            Text("SigIn with Google")
-        }
-    }
 }

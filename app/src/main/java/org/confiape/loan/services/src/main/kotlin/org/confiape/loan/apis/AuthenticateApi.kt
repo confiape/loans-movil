@@ -64,6 +64,17 @@ interface AuthenticateApi {
      * Responses:
      *  - 200: Success
      *
+     * @return [Unit]
+     */
+    @POST("api/Authenticate/LoginWithAuthenticationToken")
+    suspend fun apiAuthenticateLoginWithAuthenticationTokenPost(): Response<Unit>
+
+    /**
+     * 
+     * 
+     * Responses:
+     *  - 200: Success
+     *
      * @param tokenDto  (optional)
      * @return [Unit]
      */

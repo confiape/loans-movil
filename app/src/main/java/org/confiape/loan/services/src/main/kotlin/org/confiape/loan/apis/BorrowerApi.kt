@@ -6,6 +6,7 @@ import retrofit2.Response
 import okhttp3.RequestBody
 import com.google.gson.annotations.SerializedName
 
+import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
 import org.confiape.loan.models.BasicBorrowerClientWithTagsPaginationResponse
 import org.confiape.loan.models.BorrowerClientDto
 import org.confiape.loan.models.BorrowerClientDtoNewBorrowerClientDto
@@ -26,6 +27,17 @@ interface BorrowerApi {
      */
     @GET("api/Borrower")
     suspend fun apiBorrowerGet(@Query("PageSize") pageSize: kotlin.Int? = null, @Query("CurrentPage") currentPage: kotlin.Int? = null, @Query("OrderBy") orderBy: @JvmSuppressWildcards kotlin.collections.List<kotlin.String>? = null): Response<BasicBorrowerClientWithTagsPaginationResponse>
+
+    /**
+     * 
+     * 
+     * Responses:
+     *  - 200: Success
+     *
+     * @return [kotlin.collections.List<BasicBorrowerClientWithTagsAndLoans>]
+     */
+    @GET("api/Borrower/GetAllWithLoans")
+    suspend fun apiBorrowerGetAllWithLoansGet(): Response<kotlin.collections.List<BasicBorrowerClientWithTagsAndLoans>>
 
     /**
      * 

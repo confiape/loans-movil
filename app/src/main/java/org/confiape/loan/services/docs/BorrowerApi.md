@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost*
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
 | [**apiBorrowerGet**](BorrowerApi.md#apiBorrowerGet) | **GET** api/Borrower |  |
+| [**apiBorrowerGetAllWithLoansGet**](BorrowerApi.md#apiBorrowerGetAllWithLoansGet) | **GET** api/Borrower/GetAllWithLoans |  |
 | [**apiBorrowerIdDelete**](BorrowerApi.md#apiBorrowerIdDelete) | **DELETE** api/Borrower/{id} |  |
 | [**apiBorrowerIdGet**](BorrowerApi.md#apiBorrowerIdGet) | **GET** api/Borrower/{id} |  |
 | [**apiBorrowerIdPut**](BorrowerApi.md#apiBorrowerIdPut) | **PUT** api/Borrower/{id} |  |
@@ -43,6 +44,43 @@ launch(Dispatchers.IO) {
 ### Return type
 
 [**BasicBorrowerClientWithTagsPaginationResponse**](BasicBorrowerClientWithTagsPaginationResponse.md)
+
+### Authorization
+
+
+Configure Bearer:
+    ApiClient().setBearerToken("TOKEN")
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain, application/json, text/json
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.confiape.loan.*
+//import org.confiape.loan.infrastructure.*
+//import org.confiape.loan.models.*
+
+val apiClient = ApiClient()
+apiClient.setBearerToken("TOKEN")
+val webService = apiClient.createWebservice(BorrowerApi::class.java)
+
+launch(Dispatchers.IO) {
+    val result : kotlin.collections.List<BasicBorrowerClientWithTagsAndLoans> = webService.apiBorrowerGetAllWithLoansGet()
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**kotlin.collections.List&lt;BasicBorrowerClientWithTagsAndLoans&gt;**](BasicBorrowerClientWithTagsAndLoans.md)
 
 ### Authorization
 

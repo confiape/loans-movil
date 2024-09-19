@@ -49,8 +49,10 @@ All URIs are relative to *http://localhost*
 | *AuthenticateApi* | [**apiAuthenticateGetAuthorizationTokenPost**](docs/AuthenticateApi.md#apiauthenticategetauthorizationtokenpost) | **POST** api/Authenticate/GetAuthorizationToken |  |
 | *AuthenticateApi* | [**apiAuthenticateLogInPost**](docs/AuthenticateApi.md#apiauthenticateloginpost) | **POST** api/Authenticate/LogIn |  |
 | *AuthenticateApi* | [**apiAuthenticateLogOutGet**](docs/AuthenticateApi.md#apiauthenticatelogoutget) | **GET** api/Authenticate/LogOut |  |
+| *AuthenticateApi* | [**apiAuthenticateLoginWithAuthenticationTokenPost**](docs/AuthenticateApi.md#apiauthenticateloginwithauthenticationtokenpost) | **POST** api/Authenticate/LoginWithAuthenticationToken |  |
 | *AuthenticateApi* | [**apiAuthenticateLoginWithGoogleTokenPost**](docs/AuthenticateApi.md#apiauthenticateloginwithgoogletokenpost) | **POST** api/Authenticate/LoginWithGoogleToken |  |
 | *BorrowerApi* | [**apiBorrowerGet**](docs/BorrowerApi.md#apiborrowerget) | **GET** api/Borrower |  |
+| *BorrowerApi* | [**apiBorrowerGetAllWithLoansGet**](docs/BorrowerApi.md#apiborrowergetallwithloansget) | **GET** api/Borrower/GetAllWithLoans |  |
 | *BorrowerApi* | [**apiBorrowerIdDelete**](docs/BorrowerApi.md#apiborroweriddelete) | **DELETE** api/Borrower/{id} |  |
 | *BorrowerApi* | [**apiBorrowerIdGet**](docs/BorrowerApi.md#apiborroweridget) | **GET** api/Borrower/{id} |  |
 | *BorrowerApi* | [**apiBorrowerIdPut**](docs/BorrowerApi.md#apiborroweridput) | **PUT** api/Borrower/{id} |  |
@@ -82,6 +84,7 @@ All URIs are relative to *http://localhost*
 
  - [org.confiape.loan.models.AverageInterestByMonthDto](docs/AverageInterestByMonthDto.md)
  - [org.confiape.loan.models.BasicBorrowerClientWithTags](docs/BasicBorrowerClientWithTags.md)
+ - [org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans](docs/BasicBorrowerClientWithTagsAndLoans.md)
  - [org.confiape.loan.models.BasicBorrowerClientWithTagsPaginationResponse](docs/BasicBorrowerClientWithTagsPaginationResponse.md)
  - [org.confiape.loan.models.BasicLoanDto](docs/BasicLoanDto.md)
  - [org.confiape.loan.models.BasicLoanDtoPaginationResponse](docs/BasicLoanDtoPaginationResponse.md)
@@ -109,6 +112,7 @@ All URIs are relative to *http://localhost*
  - [org.confiape.loan.models.ReportPaymentByLoanDto](docs/ReportPaymentByLoanDto.md)
  - [org.confiape.loan.models.ReportPaymentsDto](docs/ReportPaymentsDto.md)
  - [org.confiape.loan.models.ResponseBorrowerClientDto](docs/ResponseBorrowerClientDto.md)
+ - [org.confiape.loan.models.SimpleLoanDto](docs/SimpleLoanDto.md)
  - [org.confiape.loan.models.Tag](docs/Tag.md)
  - [org.confiape.loan.models.TagBorrowerClient](docs/TagBorrowerClient.md)
  - [org.confiape.loan.models.TagDto](docs/TagDto.md)

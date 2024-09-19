@@ -1,0 +1,1 @@
+openapi-generator-cli generate -i http://localhost:3000/swagger/v1/swagger.json -g kotlin -o app/src/main/java/org/confiape/loan/services --library=jvm-retrofit2     --additional-properties=serializationLibrary=gson --additional-properties=groupId=org.confiape.loan --additional-properties=packageName=org.confiape.loan --additional-properties=useCoroutines=true
