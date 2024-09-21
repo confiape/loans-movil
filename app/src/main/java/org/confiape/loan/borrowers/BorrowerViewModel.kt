@@ -7,13 +7,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.confiape.loan.core.repositories.BorrowersRepository
 import org.confiape.loan.core.repositories.TagRepository
+import org.confiape.loan.models.BorrowerClientDto
+import org.confiape.loan.models.BorrowerClientDtoNewBorrowerClientDto
 import org.confiape.loan.models.TagDto
 import javax.inject.Inject
 
 @HiltViewModel
 class BorrowerViewModel @Inject constructor(
-    tagRepository: TagRepository,
+    tagRepository: TagRepository, private val borrowersRepository: BorrowersRepository
 ) : ViewModel() {
     var name by mutableStateOf("")
     var dni by mutableStateOf("")
@@ -45,5 +48,18 @@ class BorrowerViewModel @Inject constructor(
 
     fun isSelectedTag(tagDto: TagDto): Boolean {
         return selectedTags.any { it.id == tagDto.id }
+    }
+
+    fun saveBorrower() {
+        viewModelScope.launch {
+            borrowersRepository.createBorrower(
+                BorrowerClientDtoNewBorrowerClientDto(
+                    tagIdList = selectedTags.map { it.id!! }, borrowerClientDto = BorrowerClientDto(
+                        name = name, dni = dni
+                    )
+
+                )
+            )
+        }
     }
 }

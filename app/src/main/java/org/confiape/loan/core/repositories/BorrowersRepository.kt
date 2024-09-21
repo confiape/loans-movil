@@ -2,6 +2,7 @@ package org.confiape.loan.core.repositories
 
 import org.confiape.loan.apis.BorrowerApi
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
+import org.confiape.loan.models.BorrowerClientDtoNewBorrowerClientDto
 import javax.inject.Inject
 
 class BorrowersRepository @Inject constructor(
@@ -19,6 +20,11 @@ class BorrowersRepository @Inject constructor(
     }
 
     suspend fun updateborrowersCache() {
-        borrowersCache = borrowerApi.apiBorrowerGetAllWithLoansGet().body()!!
+        var response=borrowerApi.apiBorrowerGetAllWithLoansGet()
+        borrowersCache = response.body()?: listOf()
+    }
+    suspend fun createBorrower(dto: BorrowerClientDtoNewBorrowerClientDto){
+        borrowerApi.apiBorrowerPost(dto)
+        updateborrowersCache()
     }
 }

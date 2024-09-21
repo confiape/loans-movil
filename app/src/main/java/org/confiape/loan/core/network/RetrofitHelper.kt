@@ -1,7 +1,11 @@
 package org.confiape.loan.core.network
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.ui.Modifier
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,6 +58,7 @@ object NetworkModule {
     fun provideBorrowerApi(apiClient: ApiClient): BorrowerApi {
         return apiClient.createService(BorrowerApi::class.java)
     }
+
     @Provides
     @Singleton
     fun provideTagApi(apiClient: ApiClient): TagApi {
@@ -77,6 +82,7 @@ class AuthorizationInterceptor(private val context: Context) : Interceptor {
             }"
         )
         val originalResponse = chain.proceed(request)
+
 
         Log.i(
             AppConstants.Tag,
@@ -142,6 +148,19 @@ class AuthorizationInterceptor(private val context: Context) : Interceptor {
                 ).build()
             )
             return res
+        }
+
+        if (originalResponse.code != 200) {
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(context, "Error: ${originalResponse.code}", Toast.LENGTH_LONG,
+
+
+                ).show()
+            }
+        }else{
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(context, "Error: ${originalResponse.code}", Toast.LENGTH_LONG).show()
+            }
         }
         return originalResponse
     }
