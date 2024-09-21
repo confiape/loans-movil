@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.confiape.loan.loan.LoanScreen
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
 import java.time.format.DateTimeFormatter
 
@@ -44,7 +45,10 @@ import java.time.format.DateTimeFormatter
 fun BorrowerScreen(borrowerViewModel: BorrowersViewModel) {
     val options = borrowerViewModel.tags
     AddBorrowerScreen(borrowerViewModel.showAddBorrowerScreen,{
-        borrowerViewModel.activateAddBorrowerScreen(false)
+        borrowerViewModel.activateLoanScreen(false)
+    })
+    LoanScreen(show = borrowerViewModel.showLoanScreen,{
+        borrowerViewModel.showLoanScreen
     })
     Scaffold(topBar = {
         TopAppBar(colors = topAppBarColors(
@@ -146,7 +150,7 @@ fun BorrowerListItem(borrower: BasicBorrowerClientWithTagsAndLoans) {
         ) {
             borrower.loans!!.forEachIndexed { _, loan ->
                 val amount = loan.amount!!.plus(loan.amount * loan.interest!! / 100)
-                TextButton(onClick = { /*TODO*/ }) {
+                TextButton(onClick = {  }) {
                     Column {
                         Text(text = "S/. $amount")
                         Text(text = DateTimeFormatter.ofPattern("dd MMMM").format(loan.dateTime))
