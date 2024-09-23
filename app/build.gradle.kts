@@ -51,6 +51,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -72,7 +73,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 
 
-    implementation("androidx.credentials:credentials:1.2.2")
+
     implementation ("androidx.credentials:credentials:1.2.2")
     implementation ("androidx.credentials:credentials-play-services-auth:1.2.2")
     implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.1")
@@ -86,6 +87,7 @@ dependencies {
 
     implementation("com.google.dagger:hilt-android:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("com.github.GrenderG:Toasty:1.5.2")
 
 
     implementation(libs.androidx.core.i18n)

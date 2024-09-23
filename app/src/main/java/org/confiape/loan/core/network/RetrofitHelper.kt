@@ -11,6 +11,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -127,39 +128,32 @@ class AuthorizationInterceptor(private val context: Context) : Interceptor {
             val newToken = runBlocking {
                 service.apiAuthenticateGetAuthorizationTokenPost()
             }
+            if(newToken.code()==200){
+                SharedService.saveToken(
+                    context, AppConstants.AuthorizationToken, newToken.body()!!.accessToken ?: ""
+                )
+                originalResponse.close()
 
-            SharedService.saveToken(
-                context, AppConstants.AuthorizationToken, newToken.body()!!.accessToken ?: ""
-            )
+                val res = chain.proceed(
+                    chain.request().newBuilder().addHeader(
+                        "Authorization",
+                        "Bearer " + SharedService.getToken(AppConstants.AuthorizationToken, context)
+                    ).build()
+                )
+                return res
+            }
 
-            originalResponse.close()
-            Log.i(
-                AppConstants.Tag, "New token ${
-                    "Bearer " + SharedService.getToken(
-                        AppConstants.AuthorizationToken, context
-                    )
-                }"
-            )
-
-            val res = chain.proceed(
-                chain.request().newBuilder().addHeader(
-                    "Authorization",
-                    "Bearer " + SharedService.getToken(AppConstants.AuthorizationToken, context)
-                ).build()
-            )
-            return res
         }
 
-        if (originalResponse.code != 200) {
+        if (originalResponse.code == 200 && originalResponse.request.method=="POST") {
             Handler(Looper.getMainLooper()).post {
-                Toast.makeText(context, "Error: ${originalResponse.code}", Toast.LENGTH_LONG,
-
-
-                ).show()
+                Toasty.success(context, "This is correct toast.", Toast.LENGTH_SHORT, true).show()
             }
         }else{
-            Handler(Looper.getMainLooper()).post {
-                Toast.makeText(context, "Error: ${originalResponse.code}", Toast.LENGTH_LONG).show()
+            if(originalResponse.code!=200 ){
+                Handler(Looper.getMainLooper()).post {
+                    Toasty.error(context, "This is Error toast. ${originalResponse.code} ${originalResponse.message} ${originalResponse.message}", Toast.LENGTH_SHORT, true).show()
+                }
             }
         }
         return originalResponse
