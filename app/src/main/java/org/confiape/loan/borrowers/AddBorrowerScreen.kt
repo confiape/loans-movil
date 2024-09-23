@@ -10,6 +10,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,7 +35,6 @@ fun AddBorrowerScreen(
                             shape = SegmentedButtonDefaults.itemShape(
                                 index = index, count = options.size
                             ),
-
                             onCheckedChange = {
                                 viewModel.onSelectedTags(label)
                             }, checked = viewModel.isSelectedTag(label)
@@ -54,15 +54,18 @@ fun AddBorrowerScreen(
                 )
                 OutlinedTextField(value = viewModel.dni,
                     onValueChange = { viewModel.onChangeDni(it) },
-                    label = { Text(text = "Descripción del préstamo") })
+                    label = { Text(text = "DNI") })
 
             }
         }, confirmButton = {
-            Button(onClick = { onClose() }) {
+            Button(onClick = {
+                onClose()
+                viewModel.saveBorrower()
+            }) {
                 Text("Crear")
             }
         }, dismissButton = {
-            Button(onClick = { onClose() }) {
+            TextButton (onClick = { onClose() }) {
                 Text("Cancelar")
             }
         })

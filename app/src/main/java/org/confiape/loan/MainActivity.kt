@@ -29,7 +29,6 @@ class MainActivity @Inject constructor(
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
             LoanTheme {
                 val navigationController = rememberNavController()
                 NavHost(navController = navigationController, startDestination = Routes.Login.route) {
