@@ -147,12 +147,12 @@ class AuthorizationInterceptor(private val context: Context) : Interceptor {
 
         if (originalResponse.code == 200 && originalResponse.request.method=="POST") {
             Handler(Looper.getMainLooper()).post {
-                Toasty.success(context, "This is correct toast.", Toast.LENGTH_SHORT, true).show()
+                Toasty.success(context, "This is correct.", Toast.LENGTH_SHORT, true).show()
             }
         }else{
             if(originalResponse.code!=200 ){
                 Handler(Looper.getMainLooper()).post {
-                    Toasty.error(context, "This is Error toast. ${originalResponse.code} ${originalResponse.message} ${originalResponse.message}", Toast.LENGTH_SHORT, true).show()
+                    Toasty.error(context, "Error . ${originalResponse.code} ${originalResponse.message} ${originalResponse.message}", Toast.LENGTH_SHORT, true).show()
                 }
             }
         }

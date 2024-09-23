@@ -20,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun AddBorrowerScreen(
     show: Boolean,
     onClose: () -> Unit,
+    borrowersViewModel: BorrowersViewModel,
     viewModel: BorrowerViewModel = hiltViewModel(),
 ) {
 
@@ -50,17 +51,23 @@ fun AddBorrowerScreen(
                 OutlinedTextField(
                     value = viewModel.name,
                     onValueChange = { viewModel.onChangeName(it) },
+                    maxLines = 1,
+                    singleLine = true,
                     label = { Text(text = "Nombre") },
                 )
                 OutlinedTextField(value = viewModel.dni,
+                    maxLines = 1,
+                    singleLine = true,
                     onValueChange = { viewModel.onChangeDni(it) },
                     label = { Text(text = "DNI") })
 
             }
         }, confirmButton = {
             Button(onClick = {
+                viewModel.saveBorrower(borrowersViewModel)
+
                 onClose()
-                viewModel.saveBorrower()
+
             }) {
                 Text("Crear")
             }

@@ -1,6 +1,5 @@
 package org.confiape.loan.borrowers
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,8 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import org.confiape.loan.core.AppConstants
-import org.confiape.loan.core.repositories.BorrowersRepository
+import org.confiape.loan.apis.BorrowerApi
 import org.confiape.loan.core.repositories.LoanRepository
 import org.confiape.loan.core.repositories.TagRepository
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
@@ -19,12 +17,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BorrowersViewModel @Inject constructor(
-    private val borrowersRepository: BorrowersRepository,
+    private val borrowerApi: BorrowerApi,
     private val tagRepository: TagRepository,
-    private val loanRepository: LoanRepository
+    private val loanRepository: LoanRepository,
 ) : ViewModel() {
 
-    private var allBorrowers by mutableStateOf<List<BasicBorrowerClientWithTagsAndLoans>>(listOf())
+    private var allBorrowers by mutableStateOf<List<BasicBorrowerClientWithTagsAndLoans>> (
+        listOf()
+    )
+
     private var selectedTags by mutableStateOf<List<String>>(listOf())
 
     var showAddBorrowerScreen by mutableStateOf(false)
@@ -43,11 +44,11 @@ class BorrowersViewModel @Inject constructor(
         private set
 
     init {
-        Log.i(AppConstants.Tag, "Init borrower viewmodel")
+
         viewModelScope.launch {
-            allBorrowers = borrowersRepository.getBorrowers()
+            allBorrowers=borrowerApi.apiBorrowerGetAllWithLoansGet().body()!!
+            filterBorrowers=allBorrowers
             tags = tagRepository.getTags()
-            filterBorrowers = allBorrowers
         }
     }
 
@@ -68,11 +69,13 @@ class BorrowersViewModel @Inject constructor(
             }
         }
     }
-    fun activateAddBorrowerScreen(isActivate: Boolean){
-        showAddBorrowerScreen=isActivate
+
+    fun activateAddBorrowerScreen(isActivate: Boolean) {
+        showAddBorrowerScreen = isActivate
     }
-    fun activateLoanScreen(isActivate: Boolean){
-        showLoanScreen=isActivate
+
+    fun activateLoanScreen(isActivate: Boolean) {
+        showLoanScreen = isActivate
     }
 
     fun isSelectedTag(id: String?): Boolean {
@@ -90,10 +93,18 @@ class BorrowersViewModel @Inject constructor(
             }
         }
     }
-    fun onClickOnLoan(simpleLoanDto: SimpleLoanDto){
-        showLoanScreen=true
+
+    fun onClickOnLoan(simpleLoanDto: SimpleLoanDto) {
+        showLoanScreen = true
         viewModelScope.launch {
             loanRepository.update(simpleLoanDto.id)
+        }
+    }
+
+    fun updateBorrowers() {
+        viewModelScope.launch {
+            allBorrowers=borrowerApi.apiBorrowerGetAllWithLoansGet().body()!!
+            filterBorrowers=allBorrowers
         }
     }
 }

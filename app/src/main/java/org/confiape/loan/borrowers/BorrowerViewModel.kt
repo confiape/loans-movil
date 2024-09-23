@@ -7,25 +7,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import org.confiape.loan.core.repositories.BorrowersRepository
+import org.confiape.loan.apis.BorrowerApi
 import org.confiape.loan.core.repositories.TagRepository
 import org.confiape.loan.models.BorrowerClientDto
 import org.confiape.loan.models.BorrowerClientDtoNewBorrowerClientDto
 import org.confiape.loan.models.TagDto
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class BorrowerViewModel @Inject constructor(
-    tagRepository: TagRepository, private val borrowersRepository: BorrowersRepository
+    tagRepository: TagRepository,
+    private val borrowerApi: BorrowerApi
 ) : ViewModel() {
     var name by mutableStateOf("")
     var dni by mutableStateOf("")
     var tags by mutableStateOf<List<TagDto>>(listOf())
-    var selectedTags by mutableStateOf<List<TagDto>>(listOf())
+    private var selectedTags by mutableStateOf<List<TagDto>>(listOf())
 
     init {
         viewModelScope.launch {
             tags = tagRepository.getTags()
+
         }
     }
 
@@ -50,16 +53,16 @@ class BorrowerViewModel @Inject constructor(
         return selectedTags.any { it.id == tagDto.id }
     }
 
-    fun saveBorrower() {
+    fun saveBorrower(borrowersViewModel: BorrowersViewModel) {
         viewModelScope.launch {
-            borrowersRepository.createBorrower(
+            borrowerApi.apiBorrowerPost(
                 BorrowerClientDtoNewBorrowerClientDto(
                     tagIdList = selectedTags.map { it.id!! }, borrowerClientDto = BorrowerClientDto(
-                        name = name, dni = dni
+                        name = name, dni = dni, id = UUID.randomUUID()
                     )
-
                 )
             )
+            borrowersViewModel.updateBorrowers()
         }
     }
 }

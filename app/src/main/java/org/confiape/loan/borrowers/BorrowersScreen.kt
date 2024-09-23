@@ -44,11 +44,14 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun BorrowerScreen(borrowerViewModel: BorrowersViewModel) {
     val options = borrowerViewModel.tags
-    AddBorrowerScreen(borrowerViewModel.showAddBorrowerScreen,{
+    AddBorrowerScreen(
+        borrowerViewModel.showAddBorrowerScreen,
+        borrowersViewModel = borrowerViewModel,
+        onClose = {
+            borrowerViewModel.activateAddBorrowerScreen(false)
+        })
+    LoanScreen(show = borrowerViewModel.showLoanScreen, {
         borrowerViewModel.activateLoanScreen(false)
-    })
-    LoanScreen(show = borrowerViewModel.showLoanScreen,{
-        borrowerViewModel.showLoanScreen
     })
     Scaffold(topBar = {
         TopAppBar(colors = topAppBarColors(
@@ -119,7 +122,7 @@ fun BottomBar() {
 
 @Composable
 fun FloatingActionButtonToAddBorrower(borrowerViewModel: BorrowersViewModel) {
-    FloatingActionButton(onClick = {borrowerViewModel.activateAddBorrowerScreen(true) }) {
+    FloatingActionButton(onClick = { borrowerViewModel.activateAddBorrowerScreen(true) }) {
         Icon(Icons.Default.Add, contentDescription = "Add")
     }
 }
@@ -150,7 +153,7 @@ fun BorrowerListItem(borrower: BasicBorrowerClientWithTagsAndLoans) {
         ) {
             borrower.loans!!.forEachIndexed { _, loan ->
                 val amount = loan.amount!!.plus(loan.amount * loan.interest!! / 100)
-                TextButton(onClick = {  }) {
+                TextButton(onClick = { }) {
                     Column {
                         Text(text = "S/. $amount")
                         Text(text = DateTimeFormatter.ofPattern("dd MMMM").format(loan.dateTime))
