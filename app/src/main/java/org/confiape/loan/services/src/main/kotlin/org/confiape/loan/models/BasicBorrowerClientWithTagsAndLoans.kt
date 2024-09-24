@@ -15,7 +15,7 @@
 
 package org.confiape.loan.models
 
-import org.confiape.loan.models.SimpleLoanDto
+import org.confiape.loan.models.SimpleLoanDtoAndPayments
 
 import com.google.gson.annotations.SerializedName
 
@@ -41,7 +41,7 @@ data class BasicBorrowerClientWithTagsAndLoans (
     val tags: kotlin.collections.List<kotlin.String>? = null,
 
     @SerializedName("loans")
-    val loans: kotlin.collections.List<SimpleLoanDto>? = null
+    val loans: kotlin.collections.List<SimpleLoanDtoAndPayments>? = null
 
 ) {
 

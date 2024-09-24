@@ -19,6 +19,7 @@ import okhttp3.Response
 import org.confiape.loan.apis.AuthenticateApi
 import org.confiape.loan.apis.BorrowerApi
 import org.confiape.loan.apis.LoanApi
+import org.confiape.loan.apis.PaymentApi
 import org.confiape.loan.apis.TagApi
 import org.confiape.loan.core.AppConstants
 import org.confiape.loan.core.SharedService
@@ -64,6 +65,11 @@ object NetworkModule {
     @Singleton
     fun provideTagApi(apiClient: ApiClient): TagApi {
         return apiClient.createService(TagApi::class.java)
+    }
+    @Provides
+    @Singleton
+    fun providePaymentApi(apiClient: ApiClient): PaymentApi {
+        return apiClient.createService(PaymentApi::class.java)
     }
 }
 

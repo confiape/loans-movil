@@ -1,4 +1,4 @@
-package org.confiape.loan.loan.add
+package org.confiape.loan.borrowers.loan.add
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

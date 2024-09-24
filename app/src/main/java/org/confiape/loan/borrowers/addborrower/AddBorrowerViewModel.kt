@@ -1,4 +1,4 @@
-package org.confiape.loan.borrowers
+package org.confiape.loan.borrowers.addborrower
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.confiape.loan.apis.BorrowerApi
+import org.confiape.loan.borrowers.BorrowersViewModel
 import org.confiape.loan.core.repositories.TagRepository
 import org.confiape.loan.models.BorrowerClientDto
 import org.confiape.loan.models.BorrowerClientDtoNewBorrowerClientDto
@@ -16,7 +17,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class BorrowerViewModel @Inject constructor(
+class AddBorrowerViewModel @Inject constructor(
     tagRepository: TagRepository,
     private val borrowerApi: BorrowerApi
 ) : ViewModel() {

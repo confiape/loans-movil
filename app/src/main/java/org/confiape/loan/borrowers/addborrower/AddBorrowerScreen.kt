@@ -1,4 +1,4 @@
-package org.confiape.loan.borrowers
+package org.confiape.loan.borrowers.addborrower
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
+import org.confiape.loan.borrowers.BorrowersViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,9 +24,8 @@ fun AddBorrowerScreen(
     show: Boolean,
     onClose: () -> Unit,
     borrowersViewModel: BorrowersViewModel,
-    viewModel: BorrowerViewModel = hiltViewModel(),
+    viewModel: AddBorrowerViewModel = hiltViewModel(),
 ) {
-
     if (show) {
         val options = viewModel.tags
         AlertDialog(onDismissRequest = { }, title = { Text(text = "Nuevo Cliente") }, text = {

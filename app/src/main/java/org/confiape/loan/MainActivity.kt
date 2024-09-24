@@ -12,8 +12,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.confiape.loan.borrowers.BorrowerScreen
 import org.confiape.loan.borrowers.BorrowersViewModel
 import org.confiape.loan.core.Routes
-import org.confiape.loan.loan.add.AddLoanViewModel
-import org.confiape.loan.loan.info.InfoLoanViewModel
+import org.confiape.loan.borrowers.loan.add.AddLoanViewModel
+import org.confiape.loan.borrowers.loan.info.InfoLoanViewModel
 import org.confiape.loan.login.LoginScreen
 import org.confiape.loan.login.LoginViewModel
 import org.confiape.loan.ui.theme.LoanTheme

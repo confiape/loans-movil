@@ -35,12 +35,15 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.confiape.loan.loan.add.AddLoanScreen
-import org.confiape.loan.loan.add.AddLoanViewModel
-import org.confiape.loan.loan.info.InfoLoanScreen
-import org.confiape.loan.loan.info.InfoLoanViewModel
+import androidx.compose.ui.unit.sp
+import org.confiape.loan.borrowers.addborrower.AddBorrowerScreen
+import org.confiape.loan.borrowers.loan.add.AddLoanScreen
+import org.confiape.loan.borrowers.loan.add.AddLoanViewModel
+import org.confiape.loan.borrowers.loan.info.InfoLoanScreen
+import org.confiape.loan.borrowers.loan.info.InfoLoanViewModel
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
 import java.time.format.DateTimeFormatter
 
@@ -49,7 +52,7 @@ import java.time.format.DateTimeFormatter
 fun BorrowerScreen(
     borrowerViewModel: BorrowersViewModel,
     addLoanViewModel: AddLoanViewModel,
-    infoLoanViewModel: InfoLoanViewModel
+    infoLoanViewModel: InfoLoanViewModel,
 ) {
     val options = borrowerViewModel.tags
     AddBorrowerScreen(show = borrowerViewModel.showAddBorrowerScreen,
@@ -65,16 +68,16 @@ fun BorrowerScreen(
             borrowerViewModel.activateAddLoanScreen(false)
         },
     )
-    InfoLoanScreen(borrowerViewModel,infoLoanViewModel)
+    InfoLoanScreen(borrowerViewModel, infoLoanViewModel)
     Scaffold(topBar = {
         TopAppBar(colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.primary,
         ), title = {
-            Text("Prestamos")
+            Text("Prestamos", fontSize = 20.sp, fontWeight = FontWeight.Bold)
         })
     },
-        bottomBar = { BottomBar() },
+//        bottomBar = { BottomBar() },
         floatingActionButton = { FloatingActionButtonToAddBorrower(borrowerViewModel) }) { innerPadding ->
         Column(
             modifier = Modifier
@@ -95,7 +98,8 @@ fun BorrowerScreen(
 
                         onCheckedChange = {
                             label.title?.let { it1 -> borrowerViewModel.onSelectTag(it1) }
-                        }, checked = borrowerViewModel.isSelectedTag(label.title)
+                        },
+                        checked = borrowerViewModel.isSelectedTag(label.title),
                     ) {
                         Text(
                             text = label.title ?: "",
@@ -109,9 +113,11 @@ fun BorrowerScreen(
                 value = borrowerViewModel.searchText,
                 onValueChange = { newText -> borrowerViewModel.onSearchTextChange(newText) },
                 placeholder = {
-                    Text(text = "Buscar")
+                    Text(text = "Buscar", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             )
             ClientList(borrowerViewModel, addLoanViewModel)
 
@@ -135,7 +141,10 @@ fun BottomBar() {
 
 @Composable
 fun FloatingActionButtonToAddBorrower(borrowerViewModel: BorrowersViewModel) {
-    FloatingActionButton(onClick = { borrowerViewModel.activateAddBorrowerScreen(true) }) {
+    FloatingActionButton(
+        onClick = { borrowerViewModel.activateAddBorrowerScreen(true) },
+        containerColor = MaterialTheme.colorScheme.primary
+    ) {
         Icon(Icons.Default.Add, contentDescription = "Add")
     }
 }
@@ -144,7 +153,10 @@ fun FloatingActionButtonToAddBorrower(borrowerViewModel: BorrowersViewModel) {
 fun ClientList(borrowerViewModel: BorrowersViewModel, addLoanViewModel: AddLoanViewModel) {
 
 
-    LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
+    LazyColumn(
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         items(items = borrowerViewModel.filterBorrowers, itemContent = {
             BorrowerListItem(borrower = it, borrowerViewModel, addLoanViewModel)
         })
@@ -155,18 +167,32 @@ fun ClientList(borrowerViewModel: BorrowersViewModel, addLoanViewModel: AddLoanV
 fun BorrowerListItem(
     borrower: BasicBorrowerClientWithTagsAndLoans,
     borrowerViewModel: BorrowersViewModel,
-    addLoanViewModel: AddLoanViewModel
+    addLoanViewModel: AddLoanViewModel,
 ) {
-    Column {
-        Row(Modifier.fillMaxWidth()) {
-            Text(text = borrower.name ?: "", modifier = Modifier.weight(1f))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = borrower.name ?: "",
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold
+            )
             Text(
                 text = borrower.tags!!.firstOrNull() ?: "",
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically),
+                color = MaterialTheme.colorScheme.primary
             )
         }
         Row(
             modifier = Modifier.fillMaxWidth()
+                .padding(vertical = 8.dp)
         ) {
             LazyRow(
                 modifier = Modifier
@@ -175,26 +201,31 @@ fun BorrowerListItem(
                 items(items = borrower.loans!!,
                     itemContent = {
                         val amount = it.amount!!.plus(it.amount * it.interest!! / 100)
-                        TextButton(onClick = { }) {
+                        TextButton(onClick = {
+                            borrowerViewModel.selectBorrower(borrower)
+                            borrowerViewModel.selectLoan(it)
+                        }) {
                             Column {
                                 Text(text = "S/. $amount")
                                 Text(
                                     text = DateTimeFormatter.ofPattern("dd MMMM")
-                                        .format(it.dateTime)
+                                        .format(it.dateTime),
+                                    style = MaterialTheme.typography.labelSmall
                                 )
                             }
                         }
                     })
             }
 
-            OutlinedButton(onClick = {
+            OutlinedButton(   modifier = Modifier.padding(start = 8.dp),onClick = {
                 addLoanViewModel.borrower = borrower
                 borrowerViewModel.activateAddLoanScreen(true)
             }) {
                 Text(text = "+")
             }
         }
-        HorizontalDivider()
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
+
 
     }
 }

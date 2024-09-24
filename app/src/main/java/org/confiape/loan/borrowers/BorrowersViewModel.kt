@@ -11,8 +11,10 @@ import org.confiape.loan.apis.BorrowerApi
 import org.confiape.loan.core.repositories.LoanRepository
 import org.confiape.loan.core.repositories.TagRepository
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
-import org.confiape.loan.models.SimpleLoanDto
+import org.confiape.loan.models.SimpleLoanDtoAndPayments
+import org.confiape.loan.models.SimplePayments
 import org.confiape.loan.models.TagDto
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,21 +24,20 @@ class BorrowersViewModel @Inject constructor(
     private val loanRepository: LoanRepository,
 ) : ViewModel() {
 
-    private var allBorrowers by mutableStateOf<List<BasicBorrowerClientWithTagsAndLoans>> (
+    private var allBorrowers by mutableStateOf<List<BasicBorrowerClientWithTagsAndLoans>>(
         listOf()
     )
 
     private var selectedTags by mutableStateOf<List<String>>(listOf())
 
-    var selectedLoan by mutableStateOf<SimpleLoanDto?>(null)
+    var selectedLoan by mutableStateOf<SimpleLoanDtoAndPayments?>(null)
         private set
+
     var selectedBorrower by mutableStateOf<BasicBorrowerClientWithTagsAndLoans?>(null)
         private set
 
 
     var showAddBorrowerScreen by mutableStateOf(false)
-        private set
-    var showInfoLoanScreen by mutableStateOf(false)
         private set
 
     var showLoanScreen by mutableStateOf(false)
@@ -54,8 +55,8 @@ class BorrowersViewModel @Inject constructor(
     init {
 
         viewModelScope.launch {
-            allBorrowers=borrowerApi.apiBorrowerGetAllWithLoansGet().body()!!
-            filterBorrowers=allBorrowers
+            allBorrowers = borrowerApi.apiBorrowerGetAllWithLoansGet().body()!!
+            filterBorrowers = allBorrowers
             tags = tagRepository.getTags()
         }
     }
@@ -85,8 +86,14 @@ class BorrowersViewModel @Inject constructor(
     fun activateAddLoanScreen(isActivate: Boolean) {
         showLoanScreen = isActivate
     }
-    fun activateInfoLoanScreen(isActivate: Boolean) {
-        showInfoLoanScreen = isActivate
+
+
+    fun selectLoan(item: SimpleLoanDtoAndPayments?) {
+        selectedLoan = item
+    }
+
+    fun selectBorrower(item: BasicBorrowerClientWithTagsAndLoans?) {
+        selectedBorrower = item
     }
 
 
@@ -106,7 +113,7 @@ class BorrowersViewModel @Inject constructor(
         }
     }
 
-    fun onClickOnLoan(simpleLoanDto: SimpleLoanDto) {
+    fun onClickOnLoan(simpleLoanDto: SimpleLoanDtoAndPayments) {
         showLoanScreen = true
         viewModelScope.launch {
             loanRepository.update(simpleLoanDto.id)
@@ -115,8 +122,33 @@ class BorrowersViewModel @Inject constructor(
 
     fun updateBorrowers() {
         viewModelScope.launch {
-            allBorrowers=borrowerApi.apiBorrowerGetAllWithLoansGet().body()!!
-            filterBorrowers=allBorrowers
+            allBorrowers = borrowerApi.apiBorrowerGetAllWithLoansGet().body()!!
+            filterBorrowers = allBorrowers
+        }
+    }
+
+    fun addLocalPayments(loanId: UUID, simplePayments: SimplePayments) {
+        allBorrowers = allBorrowers.map { borrower ->
+            if (borrower.loans!!.any { it.id == loanId }) {
+                borrower.copy(loans = borrower.loans.map {
+                    if (it.id == loanId) {
+                        it.copy(
+                            payments = (it.payments ?: listOf()) + simplePayments
+                        )
+                    } else {
+                        it
+                    }
+                })
+            } else {
+                borrower
+            }
+        }
+        updateSelects()
+    }
+
+    fun updateSelects() {
+        if (selectedLoan != null) {
+            selectedLoan = allBorrowers.flatMap { it.loans!! }.find { it.id == selectedLoan!!.id }
         }
     }
 }

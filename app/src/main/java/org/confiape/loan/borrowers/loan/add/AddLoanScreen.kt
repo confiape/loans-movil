@@ -1,4 +1,4 @@
-package org.confiape.loan.loan.add
+package org.confiape.loan.borrowers.loan.add
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.text.KeyboardOptions
