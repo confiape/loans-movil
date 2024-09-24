@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -37,22 +37,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.confiape.loan.loan.LoanScreen
+import org.confiape.loan.loan.add.AddLoanScreen
+import org.confiape.loan.loan.add.AddLoanViewModel
+import org.confiape.loan.loan.info.InfoLoanScreen
+import org.confiape.loan.loan.info.InfoLoanViewModel
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
 import java.time.format.DateTimeFormatter
 
+
 @Composable
-fun BorrowerScreen(borrowerViewModel: BorrowersViewModel) {
+fun BorrowerScreen(
+    borrowerViewModel: BorrowersViewModel,
+    addLoanViewModel: AddLoanViewModel,
+    infoLoanViewModel: InfoLoanViewModel
+) {
     val options = borrowerViewModel.tags
-    AddBorrowerScreen(
-        borrowerViewModel.showAddBorrowerScreen,
+    AddBorrowerScreen(show = borrowerViewModel.showAddBorrowerScreen,
         borrowersViewModel = borrowerViewModel,
         onClose = {
             borrowerViewModel.activateAddBorrowerScreen(false)
         })
-    LoanScreen(show = borrowerViewModel.showLoanScreen, {
-        borrowerViewModel.activateLoanScreen(false)
-    })
+    AddLoanScreen(
+        show = borrowerViewModel.showLoanScreen,
+        loanViewModel = addLoanViewModel,
+        borrowersViewModel = borrowerViewModel,
+        onClose = {
+            borrowerViewModel.activateAddLoanScreen(false)
+        },
+    )
+    InfoLoanScreen(borrowerViewModel,infoLoanViewModel)
     Scaffold(topBar = {
         TopAppBar(colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -60,7 +73,8 @@ fun BorrowerScreen(borrowerViewModel: BorrowersViewModel) {
         ), title = {
             Text("Prestamos")
         })
-    }, bottomBar = { BottomBar() },
+    },
+        bottomBar = { BottomBar() },
         floatingActionButton = { FloatingActionButtonToAddBorrower(borrowerViewModel) }) { innerPadding ->
         Column(
             modifier = Modifier
@@ -81,8 +95,7 @@ fun BorrowerScreen(borrowerViewModel: BorrowersViewModel) {
 
                         onCheckedChange = {
                             label.title?.let { it1 -> borrowerViewModel.onSelectTag(it1) }
-                        },
-                        checked = borrowerViewModel.isSelectedTag(label.title)
+                        }, checked = borrowerViewModel.isSelectedTag(label.title)
                     ) {
                         Text(
                             text = label.title ?: "",
@@ -100,7 +113,7 @@ fun BorrowerScreen(borrowerViewModel: BorrowersViewModel) {
                 },
                 modifier = Modifier.fillMaxWidth()
             )
-            ClientList(borrowerViewModel)
+            ClientList(borrowerViewModel, addLoanViewModel)
 
         }
     }
@@ -128,18 +141,22 @@ fun FloatingActionButtonToAddBorrower(borrowerViewModel: BorrowersViewModel) {
 }
 
 @Composable
-fun ClientList(borrowerViewModel: BorrowersViewModel) {
+fun ClientList(borrowerViewModel: BorrowersViewModel, addLoanViewModel: AddLoanViewModel) {
 
 
     LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
         items(items = borrowerViewModel.filterBorrowers, itemContent = {
-            BorrowerListItem(borrower = it)
+            BorrowerListItem(borrower = it, borrowerViewModel, addLoanViewModel)
         })
     }
 }
 
 @Composable
-fun BorrowerListItem(borrower: BasicBorrowerClientWithTagsAndLoans) {
+fun BorrowerListItem(
+    borrower: BasicBorrowerClientWithTagsAndLoans,
+    borrowerViewModel: BorrowersViewModel,
+    addLoanViewModel: AddLoanViewModel
+) {
     Column {
         Row(Modifier.fillMaxWidth()) {
             Text(text = borrower.name ?: "", modifier = Modifier.weight(1f))
@@ -151,17 +168,29 @@ fun BorrowerListItem(borrower: BasicBorrowerClientWithTagsAndLoans) {
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
-            borrower.loans!!.forEachIndexed { _, loan ->
-                val amount = loan.amount!!.plus(loan.amount * loan.interest!! / 100)
-                TextButton(onClick = { }) {
-                    Column {
-                        Text(text = "S/. $amount")
-                        Text(text = DateTimeFormatter.ofPattern("dd MMMM").format(loan.dateTime))
-                    }
-                }
+            LazyRow(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                items(items = borrower.loans!!,
+                    itemContent = {
+                        val amount = it.amount!!.plus(it.amount * it.interest!! / 100)
+                        TextButton(onClick = { }) {
+                            Column {
+                                Text(text = "S/. $amount")
+                                Text(
+                                    text = DateTimeFormatter.ofPattern("dd MMMM")
+                                        .format(it.dateTime)
+                                )
+                            }
+                        }
+                    })
             }
-            Spacer(modifier = Modifier.weight(1f))
-            OutlinedButton(onClick = { /*TODO*/ }) {
+
+            OutlinedButton(onClick = {
+                addLoanViewModel.borrower = borrower
+                borrowerViewModel.activateAddLoanScreen(true)
+            }) {
                 Text(text = "+")
             }
         }

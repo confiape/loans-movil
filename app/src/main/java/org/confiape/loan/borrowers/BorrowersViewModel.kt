@@ -28,7 +28,15 @@ class BorrowersViewModel @Inject constructor(
 
     private var selectedTags by mutableStateOf<List<String>>(listOf())
 
+    var selectedLoan by mutableStateOf<SimpleLoanDto?>(null)
+        private set
+    var selectedBorrower by mutableStateOf<BasicBorrowerClientWithTagsAndLoans?>(null)
+        private set
+
+
     var showAddBorrowerScreen by mutableStateOf(false)
+        private set
+    var showInfoLoanScreen by mutableStateOf(false)
         private set
 
     var showLoanScreen by mutableStateOf(false)
@@ -74,9 +82,13 @@ class BorrowersViewModel @Inject constructor(
         showAddBorrowerScreen = isActivate
     }
 
-    fun activateLoanScreen(isActivate: Boolean) {
+    fun activateAddLoanScreen(isActivate: Boolean) {
         showLoanScreen = isActivate
     }
+    fun activateInfoLoanScreen(isActivate: Boolean) {
+        showInfoLoanScreen = isActivate
+    }
+
 
     fun isSelectedTag(id: String?): Boolean {
         return id in selectedTags
