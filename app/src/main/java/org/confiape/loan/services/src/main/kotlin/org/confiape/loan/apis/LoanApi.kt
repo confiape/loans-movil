@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName
 
 import org.confiape.loan.models.BasicLoanDtoPaginationResponse
 import org.confiape.loan.models.CompleteLoanDto
+import org.confiape.loan.models.CreateLoanDto
 
 interface LoanApi {
     /**
@@ -72,13 +73,10 @@ interface LoanApi {
      * Responses:
      *  - 200: Success
      *
-     * @param amount  (optional)
-     * @param interest  (optional)
-     * @param numberDate  (optional)
-     * @param borrowerClientId  (optional)
+     * @param createLoanDto  (optional)
      * @return [Unit]
      */
     @POST("api/Loan")
-    suspend fun apiLoanPost(@Query("amount") amount: kotlin.Double? = null, @Query("interest") interest: kotlin.Double? = null, @Query("numberDate") numberDate: kotlin.Int? = null, @Query("borrowerClientId") borrowerClientId: java.util.UUID? = null): Response<Unit>
+    suspend fun apiLoanPost(@Body createLoanDto: CreateLoanDto? = null): Response<Unit>
 
 }

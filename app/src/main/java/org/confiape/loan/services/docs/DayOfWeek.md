@@ -4,19 +4,19 @@
 ## Enum
 
 
-    * `_0` (value: `0`)
+    * `Sunday` (value: `"Sunday"`)
 
-    * `_1` (value: `1`)
+    * `Monday` (value: `"Monday"`)
 
-    * `_2` (value: `2`)
+    * `Tuesday` (value: `"Tuesday"`)
 
-    * `_3` (value: `3`)
+    * `Wednesday` (value: `"Wednesday"`)
 
-    * `_4` (value: `4`)
+    * `Thursday` (value: `"Thursday"`)
 
-    * `_5` (value: `5`)
+    * `Friday` (value: `"Friday"`)
 
-    * `_6` (value: `6`)
+    * `Saturday` (value: `"Saturday"`)
 
 
 

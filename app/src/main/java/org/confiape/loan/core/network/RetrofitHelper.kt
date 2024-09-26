@@ -1,6 +1,7 @@
 package org.confiape.loan.core.network
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -146,6 +147,14 @@ class AuthorizationInterceptor(private val context: Context) : Interceptor {
                         "Bearer " + SharedService.getToken(AppConstants.AuthorizationToken, context)
                     ).build()
                 )
+                if(res.code!=200){
+                    val sharedPreferences: SharedPreferences =
+                        context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+
+                    val editor = sharedPreferences.edit()
+                    editor.clear()
+                    editor.apply()
+                }
                 return res
             }
 

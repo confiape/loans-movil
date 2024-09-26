@@ -15,11 +15,13 @@ docs/BorrowerClientDtoNewBorrowerClientDto.md
 docs/CompleteLoanDto.md
 docs/CountryApi.md
 docs/CountryDto.md
+docs/CreateLoanDto.md
 docs/DashBoardApi.md
 docs/DateOnly.md
 docs/DayOfWeek.md
 docs/Loan.md
 docs/LoanApi.md
+docs/LoanType.md
 docs/LoansByMonthDto.md
 docs/LoansByMonthDtoMetadata.md
 docs/LoginDto.md
@@ -83,9 +85,11 @@ src/main/kotlin/org/confiape/loan/models/BorrowerClientDto.kt
 src/main/kotlin/org/confiape/loan/models/BorrowerClientDtoNewBorrowerClientDto.kt
 src/main/kotlin/org/confiape/loan/models/CompleteLoanDto.kt
 src/main/kotlin/org/confiape/loan/models/CountryDto.kt
+src/main/kotlin/org/confiape/loan/models/CreateLoanDto.kt
 src/main/kotlin/org/confiape/loan/models/DateOnly.kt
 src/main/kotlin/org/confiape/loan/models/DayOfWeek.kt
 src/main/kotlin/org/confiape/loan/models/Loan.kt
+src/main/kotlin/org/confiape/loan/models/LoanType.kt
 src/main/kotlin/org/confiape/loan/models/LoansByMonthDto.kt
 src/main/kotlin/org/confiape/loan/models/LoansByMonthDtoMetadata.kt
 src/main/kotlin/org/confiape/loan/models/LoginDto.kt
@@ -132,9 +136,11 @@ src/test/kotlin/org/confiape/loan/models/BorrowerClientDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/BorrowerClientTest.kt
 src/test/kotlin/org/confiape/loan/models/CompleteLoanDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/CountryDtoTest.kt
+src/test/kotlin/org/confiape/loan/models/CreateLoanDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/DateOnlyTest.kt
 src/test/kotlin/org/confiape/loan/models/DayOfWeekTest.kt
 src/test/kotlin/org/confiape/loan/models/LoanTest.kt
+src/test/kotlin/org/confiape/loan/models/LoanTypeTest.kt
 src/test/kotlin/org/confiape/loan/models/LoansByMonthDtoMetadataTest.kt
 src/test/kotlin/org/confiape/loan/models/LoansByMonthDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/LoginDtoTest.kt

@@ -128,7 +128,7 @@ class BorrowersViewModel @Inject constructor(
     }
 
     fun addLocalPayments(loanId: UUID, simplePayments: SimplePayments) {
-        allBorrowers = allBorrowers.map { borrower ->
+        allBorrowers=allBorrowers.map { borrower ->
             if (borrower.loans!!.any { it.id == loanId }) {
                 borrower.copy(loans = borrower.loans.map {
                     if (it.id == loanId) {
@@ -143,6 +143,22 @@ class BorrowersViewModel @Inject constructor(
                 borrower
             }
         }
+        filterBorrowers=filterBorrowers.map { borrower ->
+            if (borrower.loans!!.any { it.id == loanId }) {
+                borrower.copy(loans = borrower.loans.map {
+                    if (it.id == loanId) {
+                        it.copy(
+                            payments = (it.payments ?: listOf()) + simplePayments
+                        )
+                    } else {
+                        it
+                    }
+                })
+            } else {
+                borrower
+            }
+        }
+
         updateSelects()
     }
 

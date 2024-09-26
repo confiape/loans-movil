@@ -21,31 +21,19 @@ import com.google.gson.annotations.SerializedName
 /**
  * 
  *
- * Values: Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday
+ * Values: Daily,Weekly,Monthly
  */
 
-enum class DayOfWeek(val value: kotlin.String) {
+enum class LoanType(val value: kotlin.String) {
 
-    @SerializedName(value = "Sunday")
-    Sunday("Sunday"),
+    @SerializedName(value = "Daily")
+    Daily("Daily"),
 
-    @SerializedName(value = "Monday")
-    Monday("Monday"),
+    @SerializedName(value = "Weekly")
+    Weekly("Weekly"),
 
-    @SerializedName(value = "Tuesday")
-    Tuesday("Tuesday"),
-
-    @SerializedName(value = "Wednesday")
-    Wednesday("Wednesday"),
-
-    @SerializedName(value = "Thursday")
-    Thursday("Thursday"),
-
-    @SerializedName(value = "Friday")
-    Friday("Friday"),
-
-    @SerializedName(value = "Saturday")
-    Saturday("Saturday");
+    @SerializedName(value = "Monthly")
+    Monthly("Monthly");
 
     /**
      * Override [toString()] to avoid using the enum variable name as the value, and instead use
@@ -60,12 +48,12 @@ enum class DayOfWeek(val value: kotlin.String) {
         /**
          * Converts the provided [data] to a [String] on success, null otherwise.
          */
-        fun encode(data: kotlin.Any?): kotlin.String? = if (data is DayOfWeek) "$data" else null
+        fun encode(data: kotlin.Any?): kotlin.String? = if (data is LoanType) "$data" else null
 
         /**
-         * Returns a valid [DayOfWeek] for [data], null otherwise.
+         * Returns a valid [LoanType] for [data], null otherwise.
          */
-        fun decode(data: kotlin.Any?): DayOfWeek? = data?.let {
+        fun decode(data: kotlin.Any?): LoanType? = data?.let {
           val normalizedData = "$it".lowercase()
           values().firstOrNull { value ->
             it == value || normalizedData == "$value".lowercase()

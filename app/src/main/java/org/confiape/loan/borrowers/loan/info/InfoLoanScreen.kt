@@ -27,6 +27,7 @@ fun InfoLoanScreen(borrowerViewModel: BorrowersViewModel, infoLoanViewModel: Inf
     if (borrowerViewModel.selectedLoan != null) {
         AlertDialog(onDismissRequest = {
             borrowerViewModel.selectLoan(null)
+
         }, title = {
             Text(text = "${borrowerViewModel.selectedBorrower!!.name} S./${borrowerViewModel.selectedLoan!!.totalAmount}")
         }, text = {

@@ -16,6 +16,7 @@
 package org.confiape.loan.models
 
 import org.confiape.loan.models.BorrowerClient
+import org.confiape.loan.models.LoanType
 import org.confiape.loan.models.Payment
 import org.confiape.loan.models.PointDto
 
@@ -32,6 +33,8 @@ import com.google.gson.annotations.SerializedName
  * @param interest 
  * @param dateTime 
  * @param numberDate 
+ * @param loanType 
+ * @param suggestedDays 
  * @param borrowerClientId 
  * @param borrowerClient 
  * @param payments 
@@ -64,6 +67,12 @@ data class Loan (
 
     @SerializedName("numberDate")
     val numberDate: kotlin.Int? = null,
+
+    @SerializedName("loanType")
+    val loanType: LoanType? = null,
+
+    @SerializedName("suggestedDays")
+    val suggestedDays: kotlin.collections.List<kotlin.String>? = null,
 
     @SerializedName("borrowerClientId")
     val borrowerClientId: java.util.UUID? = null,

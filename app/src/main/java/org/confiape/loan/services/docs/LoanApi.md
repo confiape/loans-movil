@@ -200,23 +200,17 @@ Configure Bearer:
 val apiClient = ApiClient()
 apiClient.setBearerToken("TOKEN")
 val webService = apiClient.createWebservice(LoanApi::class.java)
-val amount : kotlin.Double = 1.2 // kotlin.Double | 
-val interest : kotlin.Double = 1.2 // kotlin.Double | 
-val numberDate : kotlin.Int = 56 // kotlin.Int | 
-val borrowerClientId : java.util.UUID = 38400000-8cf0-11bd-b23e-10b96e4ef00d // java.util.UUID | 
+val createLoanDto : CreateLoanDto =  // CreateLoanDto | 
 
 launch(Dispatchers.IO) {
-    webService.apiLoanPost(amount, interest, numberDate, borrowerClientId)
+    webService.apiLoanPost(createLoanDto)
 }
 ```
 
 ### Parameters
-| **amount** | **kotlin.Double**|  | [optional] |
-| **interest** | **kotlin.Double**|  | [optional] |
-| **numberDate** | **kotlin.Int**|  | [optional] |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **borrowerClientId** | **java.util.UUID**|  | [optional] |
+| **createLoanDto** | [**CreateLoanDto**](CreateLoanDto.md)|  | [optional] |
 
 ### Return type
 
@@ -230,6 +224,6 @@ Configure Bearer:
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json, text/json, application/*+json
  - **Accept**: Not defined
 
