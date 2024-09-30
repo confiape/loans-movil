@@ -24,26 +24,41 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import org.confiape.loan.borrowers.addborrower.AddBorrowerScreen
 import org.confiape.loan.borrowers.loan.add.AddLoanScreen
 import org.confiape.loan.borrowers.loan.add.AddLoanViewModel
 import org.confiape.loan.borrowers.loan.info.InfoLoanScreen
 import org.confiape.loan.borrowers.loan.info.InfoLoanViewModel
+import org.confiape.loan.borrowers.reports.ReportsScreen
+import org.confiape.loan.borrowers.reports.ReportsViewModel
+import org.confiape.loan.core.Routes
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
 import java.time.format.DateTimeFormatter
 
@@ -53,76 +68,127 @@ fun BorrowerScreen(
     borrowerViewModel: BorrowersViewModel,
     addLoanViewModel: AddLoanViewModel,
     infoLoanViewModel: InfoLoanViewModel,
+    reportsViewModel: ReportsViewModel,
 ) {
-    val options = borrowerViewModel.tags
-    AddBorrowerScreen(show = borrowerViewModel.showAddBorrowerScreen,
-        borrowersViewModel = borrowerViewModel,
-        onClose = {
-            borrowerViewModel.activateAddBorrowerScreen(false)
-        })
-    AddLoanScreen(
-        show = borrowerViewModel.showLoanScreen,
-        loanViewModel = addLoanViewModel,
-        borrowersViewModel = borrowerViewModel,
-        onClose = {
-            borrowerViewModel.activateAddLoanScreen(false)
-        },
-    )
-    InfoLoanScreen(borrowerViewModel, infoLoanViewModel)
-    Scaffold(topBar = {
-        TopAppBar(colors = topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary,
-        ), title = {
-            Text("Prestamos", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        })
-    },
-//        bottomBar = { BottomBar() },
-        floatingActionButton = { FloatingActionButtonToAddBorrower(borrowerViewModel) }) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+    val navigationController = rememberNavController()
+    val currentBackStackEntry by navigationController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
+
+    Scaffold(topBar = { TopBar(navigationController) }, floatingActionButton = {
+        if (currentRoute == Routes.Loans.route) {
+            AddBorrower(borrowerViewModel)
+        }
+    }) {
+
+        NavHost(
+            modifier = Modifier.padding(it),
+            navController = navigationController,
+            startDestination = Routes.Loans.route
         ) {
-
-
-            MultiChoiceSegmentedButtonRow(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                options.forEachIndexed { index, label ->
-                    SegmentedButton(
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index, count = options.size
-                        ),
-
-                        onCheckedChange = {
-                            label.title?.let { it1 -> borrowerViewModel.onSelectTag(it1) }
-                        },
-                        checked = borrowerViewModel.isSelectedTag(label.title),
-                    ) {
-                        Text(
-                            text = label.title ?: "",
-                            modifier = Modifier.fillMaxWidth(),
-                            maxLines = 1
-                        )
-                    }
-                }
+            composable(Routes.Loans.route) {
+                Content(borrowerViewModel, addLoanViewModel, infoLoanViewModel)
             }
-            TextField(
-                value = borrowerViewModel.searchText,
-                onValueChange = { newText -> borrowerViewModel.onSearchTextChange(newText) },
-                placeholder = {
-                    Text(text = "Buscar", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-            ClientList(borrowerViewModel, addLoanViewModel)
-
+            composable(Routes.Reports.route) {
+                LaunchedEffect(Unit) {
+                    reportsViewModel.update()
+                }
+                ReportsScreen(reportsViewModel)
+            }
         }
     }
+}
+
+
+
+@Composable
+fun AddDialogs(
+    borrowerViewModel: BorrowersViewModel,
+    addLoanViewModel: AddLoanViewModel,
+    infoLoanViewModel: InfoLoanViewModel
+) {
+    AddBorrowerScreen(borrowersViewModel = borrowerViewModel)
+    AddLoanScreen(loanViewModel = addLoanViewModel, borrowersViewModel = borrowerViewModel)
+    InfoLoanScreen(borrowerViewModel, infoLoanViewModel)
+}
+
+@Composable
+fun Content(
+
+    borrowerViewModel: BorrowersViewModel,
+    addLoanViewModel: AddLoanViewModel,
+    infoLoanViewModel: InfoLoanViewModel
+) {
+    AddDialogs(borrowerViewModel, addLoanViewModel, infoLoanViewModel)
+    Column(
+        modifier = Modifier
+
+
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+
+        MultiChoiceSegmentedButtonRow(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+        ) {
+            borrowerViewModel.tags.forEachIndexed { index, label ->
+                SegmentedButton(
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = index, count = borrowerViewModel.tags.size
+                    ),
+                    onCheckedChange = {
+                        label.title?.let { it1 -> borrowerViewModel.onSelectTag(it1) }
+                    },
+                    checked = borrowerViewModel.isSelectedTag(label.title),
+                ) {
+                    Text(
+                        text = label.title ?: "", modifier = Modifier.fillMaxWidth(), maxLines = 1
+                    )
+                }
+            }
+        }
+        TextField(
+            value = borrowerViewModel.searchText,
+            onValueChange = { newText -> borrowerViewModel.onSearchTextChange(newText) },
+            placeholder = {
+                Text(text = "Buscar", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        )
+        ClientList(borrowerViewModel, addLoanViewModel)
+
+    }
+}
+
+
+@Composable
+fun TopBar(navigationController: NavHostController) {
+    var state by remember { mutableStateOf(0) }
+    val titles = listOf("Prestamos", "Reporte del dia")
+
+    TopAppBar(colors = topAppBarColors(
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        titleContentColor = MaterialTheme.colorScheme.primary,
+    ), title = {
+        PrimaryTabRow(
+            selectedTabIndex = state, modifier = Modifier.fillMaxWidth()
+        ) {
+            titles.forEachIndexed { index, title ->
+                Tab(selected = state == index, onClick = {
+                    state = index
+                    if (index == 0) {
+                        navigationController.navigate(Routes.Loans.route)
+                    }
+                    if (index == 1) {
+                        navigationController.navigate(Routes.Reports.route)
+                    }
+                }, text = {
+                    Text(title, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                })
+            }
+        }
+    })
 }
 
 @Composable
@@ -130,6 +196,7 @@ fun BottomBar() {
     BottomAppBar(
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.primary,
+//        modifier = Modifier.height(64.dp)
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -140,7 +207,8 @@ fun BottomBar() {
 }
 
 @Composable
-fun FloatingActionButtonToAddBorrower(borrowerViewModel: BorrowersViewModel) {
+fun AddBorrower(borrowerViewModel: BorrowersViewModel) {
+
     FloatingActionButton(
         onClick = { borrowerViewModel.activateAddBorrowerScreen(true) },
         containerColor = MaterialTheme.colorScheme.primary
@@ -175,8 +243,7 @@ fun BorrowerListItem(
             .padding(vertical = 8.dp)
     ) {
         Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = borrower.name ?: "",
@@ -191,33 +258,31 @@ fun BorrowerListItem(
             )
         }
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(vertical = 8.dp)
         ) {
             LazyRow(
-                modifier = Modifier
-                    .weight(1f)
+                modifier = Modifier.weight(1f)
             ) {
-                items(items = borrower.loans!!,
-                    itemContent = {
-                        val amount = it.amount!!.plus(it.amount * it.interest!! / 100)
-                        TextButton(onClick = {
-                            borrowerViewModel.selectBorrower(borrower)
-                            borrowerViewModel.selectLoan(it)
-                        }) {
-                            Column {
-                                Text(text = "S/. $amount")
-                                Text(
-                                    text = DateTimeFormatter.ofPattern("dd MMMM")
-                                        .format(it.dateTime),
-                                    style = MaterialTheme.typography.labelSmall
-                                )
-                            }
+                items(items = borrower.loans!!, itemContent = {
+                    val amount = it.amount!!.plus(it.amount * it.interest!! / 100)
+                    TextButton(onClick = {
+                        borrowerViewModel.selectBorrower(borrower)
+                        borrowerViewModel.selectLoan(it)
+                    }) {
+                        Column {
+                            Text(text = "S/. $amount")
+                            Text(
+                                text = DateTimeFormatter.ofPattern("dd MMMM").format(it.dateTime),
+                                style = MaterialTheme.typography.labelSmall
+                            )
                         }
-                    })
+                    }
+                })
             }
 
-            OutlinedButton(   modifier = Modifier.padding(start = 8.dp),onClick = {
+            OutlinedButton(modifier = Modifier.padding(start = 8.dp), onClick = {
                 addLoanViewModel.borrower = borrower
                 borrowerViewModel.activateAddLoanScreen(true)
             }) {

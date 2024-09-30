@@ -15,7 +15,6 @@
 
 package org.confiape.loan.models
 
-import org.confiape.loan.models.DateOnly
 import org.confiape.loan.models.ReportPaymentsDto
 
 import com.google.gson.annotations.SerializedName
@@ -32,7 +31,7 @@ import com.google.gson.annotations.SerializedName
 data class ReportPaymentByDayDto (
 
     @SerializedName("dateTime")
-    val dateTime: DateOnly? = null,
+    val dateTime: java.time.OffsetDateTime? = null,
 
     @SerializedName("totalPayment")
     val totalPayment: kotlin.Double? = null,

@@ -53,10 +53,10 @@ import org.confiape.loan.borrowers.BorrowersViewModel
 
 @Composable
 fun AddLoanScreen(
-    show: Boolean, onClose: () -> Unit, loanViewModel: AddLoanViewModel,
+ loanViewModel: AddLoanViewModel,
     borrowersViewModel: BorrowersViewModel,
 ) {
-    if (show) {
+    if (borrowersViewModel.showLoanScreen) {
         AlertDialog(onDismissRequest = { },
             title = { Text(text = "Nuevo Prestamo para \"${loanViewModel.borrower.name}\"") },
             text = {
@@ -85,13 +85,15 @@ fun AddLoanScreen(
             confirmButton = {
                 Button(onClick = {
                     loanViewModel.insert(borrowersViewModel)
-                    onClose()
+                    borrowersViewModel.activateAddLoanScreen(false)
                 }) {
                     Text("Crear")
                 }
             },
             dismissButton = {
-                Button(onClick = { onClose() }) {
+                Button(onClick = {
+                    borrowersViewModel.activateAddLoanScreen(false)
+                }) {
                     Text("Cancelar")
                 }
             })

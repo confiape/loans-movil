@@ -14,6 +14,7 @@ import org.confiape.loan.borrowers.BorrowersViewModel
 import org.confiape.loan.core.Routes
 import org.confiape.loan.borrowers.loan.add.AddLoanViewModel
 import org.confiape.loan.borrowers.loan.info.InfoLoanViewModel
+import org.confiape.loan.borrowers.reports.ReportsViewModel
 import org.confiape.loan.login.LoginScreen
 import org.confiape.loan.login.LoginViewModel
 import org.confiape.loan.ui.theme.LoanTheme
@@ -27,6 +28,7 @@ class MainActivity @Inject constructor(
     private val borrowerViewModel: BorrowersViewModel by viewModels();
     private val addLoanViewModel: AddLoanViewModel by viewModels();
     private val infoLoanViewModel: InfoLoanViewModel by viewModels();
+    private val reportsViewModel: ReportsViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +52,8 @@ class MainActivity @Inject constructor(
                         BorrowerScreen(
                             borrowerViewModel,
                             addLoanViewModel,
-                            infoLoanViewModel
+                            infoLoanViewModel,
+                            reportsViewModel
                         )
                     }
                 }

@@ -5,7 +5,7 @@
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
 | **name** | **kotlin.String** |  |  [optional] |
-| **loanDate** | [**DateOnly**](DateOnly.md) |  |  [optional] |
+| **loanDate** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **amount** | **kotlin.Double** |  |  [optional] |
 | **payment** | **kotlin.Double** |  |  [optional] |
 

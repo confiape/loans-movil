@@ -21,12 +21,10 @@ import org.confiape.loan.borrowers.BorrowersViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddBorrowerScreen(
-    show: Boolean,
-    onClose: () -> Unit,
     borrowersViewModel: BorrowersViewModel,
     viewModel: AddBorrowerViewModel = hiltViewModel(),
 ) {
-    if (show) {
+    if (borrowersViewModel.showAddBorrowerScreen) {
         val options = viewModel.tags
         AlertDialog(onDismissRequest = { }, title = { Text(text = "Nuevo Cliente") }, text = {
             Column {
@@ -37,8 +35,7 @@ fun AddBorrowerScreen(
                         SegmentedButton(
                             shape = SegmentedButtonDefaults.itemShape(
                                 index = index, count = options.size
-                            ),
-                            onCheckedChange = {
+                            ), onCheckedChange = {
                                 viewModel.onSelectedTags(label)
                             }, checked = viewModel.isSelectedTag(label)
                         ) {
@@ -68,14 +65,14 @@ fun AddBorrowerScreen(
         }, confirmButton = {
             Button(onClick = {
                 viewModel.saveBorrower(borrowersViewModel)
-
-                onClose()
-
+                borrowersViewModel.activateAddBorrowerScreen(false)
             }) {
                 Text("Crear")
             }
         }, dismissButton = {
-            TextButton (onClick = { onClose() }) {
+            TextButton(onClick = {
+                borrowersViewModel.activateAddBorrowerScreen(false)
+            }) {
                 Text("Cancelar")
             }
         })
