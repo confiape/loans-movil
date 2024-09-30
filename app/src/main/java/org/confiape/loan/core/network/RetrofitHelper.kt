@@ -7,6 +7,10 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.Modifier
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,6 +30,10 @@ import org.confiape.loan.apis.TagApi
 import org.confiape.loan.core.AppConstants
 import org.confiape.loan.core.SharedService
 import org.confiape.loan.infrastructure.ApiClient
+import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.reflect.Type
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Singleton
 
 @Module
@@ -36,7 +44,9 @@ object NetworkModule {
     @Singleton
     fun provideApiClient(@ApplicationContext context: Context): ApiClient {
 
-        val okHttpClient = OkHttpClient.Builder().addInterceptor(AuthorizationInterceptor(context))
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthorizationInterceptor(context))
 
         val response = ApiClient(
             baseUrl = AppConstants.BaseUrl, okHttpClient
@@ -180,3 +190,4 @@ class AuthorizationInterceptor(private val context: Context) : Interceptor {
         return originalResponse
     }
 }
+
