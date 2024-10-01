@@ -21,12 +21,16 @@ import com.google.gson.annotations.SerializedName
 /**
  * 
  *
+ * @param id 
  * @param dateTime 
  * @param amount 
  */
 
 
 data class SimplePayments (
+
+    @SerializedName("id")
+    val id: java.util.UUID? = null,
 
     @SerializedName("dateTime")
     val dateTime: java.time.OffsetDateTime? = null,

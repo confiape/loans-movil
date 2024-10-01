@@ -45,11 +45,11 @@ interface PaymentApi {
      *  - 200: Success
      *
      * @param id 
-     * @param paymentDto  (optional)
+     * @param amount  (optional)
      * @return [Payment]
      */
     @PUT("api/Payment/{id}")
-    suspend fun apiPaymentIdPut(@Path("id") id: java.util.UUID, @Query("paymentDto") paymentDto: kotlin.Any? = null): Response<Payment>
+    suspend fun apiPaymentIdPut(@Path("id") id: java.util.UUID, @Query("Amount") amount: kotlin.Double? = null): Response<Payment>
 
     /**
      * 

@@ -16,7 +16,6 @@ import org.confiape.loan.models.SimplePayments
 import java.time.Duration
 import java.time.OffsetDateTime
 import java.util.UUID
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,27 +32,64 @@ class InfoLoanViewModel @Inject constructor(
         amountToPAy = it
     }
 
-    fun pay(loanId: UUID,borrowersViewModel: BorrowersViewModel) {
-        isDisablePayButton=true
+    fun pay(loanId: UUID, borrowersViewModel: BorrowersViewModel) {
+        isDisablePayButton = true
         viewModelScope.launch {
-            try{
-                val response=paymentApi.apiPaymentPost(
+            try {
+                val response = paymentApi.apiPaymentPost(
                     NewPaymentDto(
-                        loanId = loanId, amount = amountToPAy.toDouble(), location = PointDto(0.0, 0.0)
+                        loanId = loanId,
+                        amount = amountToPAy.toDouble(),
+                        location = PointDto(0.0, 0.0)
                     )
                 )
-                if(response.code()==200){
-                    borrowersViewModel.addLocalPayments(loanId, SimplePayments(
-                        OffsetDateTime.now(),
-                        amountToPAy.toDouble()
-                    ))
+                if (response.code() == 200) {
+                    borrowersViewModel.addLocalPayments(
+                        loanId, SimplePayments(
+                            dateTime=OffsetDateTime.now(),
+                            amount=amountToPAy.toDouble(),
+                            id=response.body()!!.id
+                        )
+                    )
                 }
                 delay(Duration.ofSeconds(2))
-                isDisablePayButton=false
-            }catch (e:Exception){
+                isDisablePayButton = false
+                amountToPAy = ""
+            } catch (e: Exception) {
                 delay(Duration.ofSeconds(2))
-                isDisablePayButton=false
+                isDisablePayButton = false
             }
         }
     }
+
+    fun editPay(id: UUID?, borrowerViewModel: BorrowersViewModel) {
+
+        isDisablePayButton = true
+        viewModelScope.launch {
+            try {
+                id?.let {
+                    val response = paymentApi.apiPaymentIdPut(
+                        it, amountToPAy.toDouble()
+                    )
+                    if (response.code() == 200) {
+                        borrowerViewModel.updateLocalPayments(
+                            id, SimplePayments(
+                                dateTime= OffsetDateTime.now(),
+                                amount=amountToPAy.toDouble(),
+                                id= response.body()!!.id
+                            )
+                        )
+                    }
+                }
+
+                delay(Duration.ofSeconds(2))
+                isDisablePayButton = false
+                amountToPAy = ""
+            } catch (e: Exception) {
+                delay(Duration.ofSeconds(2))
+                isDisablePayButton = false
+            }
+        }
+    }
+
 }

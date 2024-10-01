@@ -22,7 +22,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * 
  *
- * @param borrowerClientId 
+ * @param id 
  * @param dateTime 
  * @param amount 
  * @param location 
@@ -31,8 +31,8 @@ import com.google.gson.annotations.SerializedName
 
 data class PaymentDto (
 
-    @SerializedName("borrowerClientId")
-    val borrowerClientId: java.util.UUID? = null,
+    @SerializedName("id")
+    val id: java.util.UUID? = null,
 
     @SerializedName("dateTime")
     val dateTime: java.time.OffsetDateTime? = null,

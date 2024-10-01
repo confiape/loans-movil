@@ -1,11 +1,13 @@
 package org.confiape.loan.borrowers.reports
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,16 +35,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import org.confiape.loan.borrowers.BorrowerListItem
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun ReportsScreen(reportsViewModel: ReportsViewModel) {
     if (reportsViewModel.isLoading) {
@@ -60,9 +64,44 @@ fun ReportsScreen(reportsViewModel: ReportsViewModel) {
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(items = reportsViewModel.paymentByDayDto.detailsDto?: listOf(), itemContent = {
-                    Text(text = it.name?:"d")
-                })
+                items(items = reportsViewModel.paymentByDayDto.detailsDto ?: listOf(),
+                    itemContent = {
+                        Row(Modifier.fillMaxWidth()) {
+                            Text(text = it.name ?: "d", modifier = Modifier.weight(0.7f))
+                            Text(text = "S./", modifier = Modifier.weight(0.1f))
+                            Text(
+                                text = String.format("%,.2f", it.payment),
+                                modifier = Modifier.weight(0.2f),
+                                textAlign = TextAlign.End
+                            )
+                        }
+
+                    })
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Total pagado:",
+                            modifier = Modifier.weight(0.6f),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                        Text(
+                            text = "S./",
+                            modifier = Modifier.weight(0.1f),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                        Text(
+                            text = String.format("%,.2f", 5232.67),
+                            modifier = Modifier.weight(0.3f),
+                            textAlign = TextAlign.End,
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
+
+                }
             }
         }
     }
@@ -74,9 +113,8 @@ fun DatePickerDocked(
     onChangeDate: (OffsetDateTime) -> Unit,
     defaultDate: OffsetDateTime = OffsetDateTime.now(),
 
-) {
-    val defaultMillis =
-        defaultDate.toInstant().toEpochMilli()
+    ) {
+    val defaultMillis = defaultDate.toInstant().toEpochMilli()
     var showDatePicker by remember { mutableStateOf(false) }
 
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = defaultMillis)
@@ -129,13 +167,14 @@ fun DatePickerDocked(
 }
 
 fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    val formatter = SimpleDateFormat("dd-MM-yyyy", Locale("es", "PE"))
+    formatter.timeZone = TimeZone.getTimeZone("UTC")
     return formatter.format(Date(millis))
 }
 
 fun convertMillisToDateTimeOffset(millis: Long): OffsetDateTime {
     val instant = Instant.ofEpochMilli(millis)
     return OffsetDateTime.ofInstant(
-        instant, ZoneOffset.systemDefault()
+        instant, ZoneOffset.UTC
     )
 }

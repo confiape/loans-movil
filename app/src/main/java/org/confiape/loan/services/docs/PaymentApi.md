@@ -108,10 +108,10 @@ val apiClient = ApiClient()
 apiClient.setBearerToken("TOKEN")
 val webService = apiClient.createWebservice(PaymentApi::class.java)
 val id : java.util.UUID = 38400000-8cf0-11bd-b23e-10b96e4ef00d // java.util.UUID | 
-val paymentDto : kotlin.Any = Object // kotlin.Any | 
+val amount : kotlin.Double = 1.2 // kotlin.Double | 
 
 launch(Dispatchers.IO) {
-    val result : Payment = webService.apiPaymentIdPut(id, paymentDto)
+    val result : Payment = webService.apiPaymentIdPut(id, amount)
 }
 ```
 
@@ -119,7 +119,7 @@ launch(Dispatchers.IO) {
 | **id** | **java.util.UUID**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **paymentDto** | [**kotlin.Any**](.md)|  | [optional] |
+| **amount** | **kotlin.Double**|  | [optional] |
 
 ### Return type
 

@@ -128,12 +128,12 @@ class BorrowersViewModel @Inject constructor(
     }
 
     fun addLocalPayments(loanId: UUID, simplePayments: SimplePayments) {
-        allBorrowers=allBorrowers.map { borrower ->
+        allBorrowers = allBorrowers.map { borrower ->
             if (borrower.loans!!.any { it.id == loanId }) {
                 borrower.copy(loans = borrower.loans.map {
                     if (it.id == loanId) {
                         it.copy(
-                            payments = (it.payments ?: listOf()) + simplePayments
+                            payments = listOf(simplePayments) + (it.payments ?: listOf())
                         )
                     } else {
                         it
@@ -143,12 +143,12 @@ class BorrowersViewModel @Inject constructor(
                 borrower
             }
         }
-        filterBorrowers=filterBorrowers.map { borrower ->
+        filterBorrowers = filterBorrowers.map { borrower ->
             if (borrower.loans!!.any { it.id == loanId }) {
                 borrower.copy(loans = borrower.loans.map {
                     if (it.id == loanId) {
                         it.copy(
-                            payments = (it.payments ?: listOf()) + simplePayments
+                            payments = listOf(simplePayments) + (it.payments ?: listOf())
                         )
                     } else {
                         it
@@ -166,5 +166,53 @@ class BorrowersViewModel @Inject constructor(
         if (selectedLoan != null) {
             selectedLoan = allBorrowers.flatMap { it.loans!! }.find { it.id == selectedLoan!!.id }
         }
+    }
+
+    fun updateLocalPayments(id: UUID, simplePayments: SimplePayments) {
+        allBorrowers = allBorrowers.map { borrower ->
+            if (borrower.loans!!.any { it.payments!!.any { payment -> payment.id == id } }) {
+                borrower.copy(loans = borrower.loans.map { loans->
+                    loans.copy(
+                        payments = loans.payments!!.map {
+                            if(it.id==id){
+                                it.copy(
+                                    amount = simplePayments.amount,
+                                    dateTime = simplePayments.dateTime,
+                                    id = simplePayments.id
+                                )
+                            }else{
+                                it
+                            }
+                        }
+                    )
+
+                })
+            } else {
+                borrower
+            }
+        }
+        filterBorrowers = filterBorrowers.map { borrower ->
+            if (borrower.loans!!.any { it.payments!!.any { payment -> payment.id == id } }) {
+                borrower.copy(loans = borrower.loans.map { loans->
+                    loans.copy(
+                        payments = loans.payments!!.map {
+                            if(it.id==id){
+                                it.copy(
+                                    amount = simplePayments.amount,
+                                    dateTime = simplePayments.dateTime,
+                                    id = simplePayments.id
+                                )
+                            }else{
+                                it
+                            }
+                        }
+                    )
+
+                })
+            } else {
+                borrower
+            }
+        }
+        updateSelects()
     }
 }

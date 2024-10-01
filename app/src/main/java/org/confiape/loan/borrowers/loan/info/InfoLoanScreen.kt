@@ -12,13 +12,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.confiape.loan.borrowers.BorrowersViewModel
 import org.confiape.loan.models.SimpleLoanDtoAndPayments
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -72,22 +73,50 @@ fun InfoLoanScreen(borrowerViewModel: BorrowersViewModel, infoLoanViewModel: Inf
                         maxLines = 1,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         onValueChange = { infoLoanViewModel.OnChangeAmountToPay(it) })
-                    Button(modifier = Modifier.weight(1f),
+                    Button(modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically),
                         enabled = !infoLoanViewModel.isDisablePayButton,
                         onClick = {
-                        infoLoanViewModel.pay(
-                            borrowerViewModel.selectedLoan!!.id!!, borrowerViewModel
-                        )
-                    }) {
-                        Text("Pagar")
+
+                            val pay = borrowerViewModel.selectedLoan!!.payments!!.find {
+                                it.dateTime!!.toLocalDate().isEqual(LocalDate.now())
+                            }
+                            if (pay == null) {
+                                infoLoanViewModel.pay(
+                                    borrowerViewModel.selectedLoan!!.id!!, borrowerViewModel
+                                )
+                            } else {
+                                infoLoanViewModel.editPay(
+                                    pay.id, borrowerViewModel
+                                )
+                            }
+
+                        }) {
+                        if (borrowerViewModel.selectedLoan!!.payments!!.any {
+                                it.dateTime!!.toLocalDate().isEqual(LocalDate.now())
+                            }) {
+                            Text("Editar")
+                        } else {
+                            Text("Pagar")
+                        }
+
                     }
                 }
                 LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
-                    items(items = (borrowerViewModel.selectedLoan?: (SimpleLoanDtoAndPayments(payments = listOf()))).payments!!, itemContent = {
+                    items(items = (borrowerViewModel.selectedLoan ?: (SimpleLoanDtoAndPayments(
+                        payments = listOf()
+                    ))).payments!!, itemContent = {
                         Row {
-                            Text(modifier = Modifier.weight(1f),text = DateTimeFormatter.ofPattern("dd MMMM")
-                                .format(it.dateTime))
-                            Text(modifier = Modifier.weight(1f),text = "S./ ${it.amount.toString()}")
+                            Text(
+                                modifier = Modifier.weight(1f),
+                                text = DateTimeFormatter.ofPattern("dd MMMM").format(it.dateTime)
+                            )
+                            Text(
+                                modifier = Modifier.weight(1f),
+                                text = "S./ ${it.amount.toString()}"
+                            )
+
                         }
                         HorizontalDivider()
                     })
