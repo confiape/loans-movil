@@ -70,6 +70,7 @@ All URIs are relative to *http://localhost*
 | *PaymentApi* | [**apiPaymentIdGet**](docs/PaymentApi.md#apipaymentidget) | **GET** api/Payment/{id} |  |
 | *PaymentApi* | [**apiPaymentIdPut**](docs/PaymentApi.md#apipaymentidput) | **PUT** api/Payment/{id} |  |
 | *PaymentApi* | [**apiPaymentPost**](docs/PaymentApi.md#apipaymentpost) | **POST** api/Payment |  |
+| *ReportsApi* | [**apiReportsGetReportsByDayGet**](docs/ReportsApi.md#apireportsgetreportsbydayget) | **GET** api/Reports/GetReportsByDay |  |
 | *ReportsApi* | [**apiReportsReportPaymentByDayGet**](docs/ReportsApi.md#apireportsreportpaymentbydayget) | **GET** api/Reports/ReportPaymentByDay |  |
 | *ReportsApi* | [**apiReportsReportPaymentByLoanGet**](docs/ReportsApi.md#apireportsreportpaymentbyloanget) | **GET** api/Reports/ReportPaymentByLoan |  |
 | *TagApi* | [**apiTagGet**](docs/TagApi.md#apitagget) | **GET** api/Tag |  |

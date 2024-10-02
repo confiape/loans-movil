@@ -36,6 +36,8 @@ class ReportsViewModel @Inject constructor(
             viewModelScope.launch {
                 isLoading = true
                 try {
+                    var a=reportsApi.apiReportsGetReportsByDayGet().body()
+
                     val response = reportsApi.apiReportsReportPaymentByDayGet(defaultDate)
                     paymentByDayDto = response.body() ?: ReportPaymentByDayDto()
                     totalPayment=response.body()!!.detailsDto!!.sumOf { e ->

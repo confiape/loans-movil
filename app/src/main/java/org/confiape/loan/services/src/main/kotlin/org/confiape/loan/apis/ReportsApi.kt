@@ -17,6 +17,18 @@ interface ReportsApi {
      *  - 200: Success
      *
      * @param dateTime  (optional)
+     * @return [Unit]
+     */
+    @GET("api/Reports/GetReportsByDay")
+    suspend fun apiReportsGetReportsByDayGet(@Query("dateTime") dateTime: java.time.OffsetDateTime? = null): Response<Unit>
+
+    /**
+     * 
+     * 
+     * Responses:
+     *  - 200: Success
+     *
+     * @param dateTime  (optional)
      * @return [ReportPaymentByDayDto]
      */
     @GET("api/Reports/ReportPaymentByDay")
