@@ -94,7 +94,7 @@ fun ReportsScreen(reportsViewModel: ReportsViewModel) {
                             style = MaterialTheme.typography.titleLarge
                         )
                         Text(
-                            text = String.format("%,.2f", 5232.67),
+                            text = String.format("%,.2f", reportsViewModel.totalPayment),
                             modifier = Modifier.weight(0.3f),
                             textAlign = TextAlign.End,
                             style = MaterialTheme.typography.titleLarge

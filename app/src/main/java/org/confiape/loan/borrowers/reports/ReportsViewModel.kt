@@ -24,6 +24,9 @@ class ReportsViewModel @Inject constructor(
     var paymentByDayDto by mutableStateOf(ReportPaymentByDayDto())
         private set
 
+    var totalPayment by mutableStateOf(0.0)
+        private set
+
     var isLoading by mutableStateOf(false)
         private set
 
@@ -35,7 +38,9 @@ class ReportsViewModel @Inject constructor(
                 try {
                     val response = reportsApi.apiReportsReportPaymentByDayGet(defaultDate)
                     paymentByDayDto = response.body() ?: ReportPaymentByDayDto()
-
+                    totalPayment=response.body()!!.detailsDto!!.sumOf { e ->
+                        e.payment ?: 0.0
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 } finally {
