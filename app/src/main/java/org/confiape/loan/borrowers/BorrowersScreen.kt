@@ -11,16 +11,19 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.OutlinedButton
@@ -58,6 +61,7 @@ import org.confiape.loan.borrowers.loan.info.InfoLoanScreen
 import org.confiape.loan.borrowers.loan.info.InfoLoanViewModel
 import org.confiape.loan.borrowers.reports.ReportsScreen
 import org.confiape.loan.borrowers.reports.ReportsViewModel
+import org.confiape.loan.borrowers.updateBorrower.UpdateBorrowerScreen
 import org.confiape.loan.core.Routes
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
 import java.time.format.DateTimeFormatter
@@ -106,11 +110,12 @@ fun AddDialogs(
     AddBorrowerScreen(borrowersViewModel = borrowerViewModel)
     AddLoanScreen(loanViewModel = addLoanViewModel, borrowersViewModel = borrowerViewModel)
     InfoLoanScreen(borrowerViewModel, infoLoanViewModel)
+    UpdateBorrowerScreen(borrowerViewModel)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Content(
-
     borrowerViewModel: BorrowersViewModel,
     addLoanViewModel: AddLoanViewModel,
     infoLoanViewModel: InfoLoanViewModel
@@ -240,7 +245,8 @@ fun BorrowerListItem(
             .padding(vertical = 8.dp)
     ) {
         Row(
-            Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+            Modifier.fillMaxWidth()
+            , horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = borrower.name ?: "",
@@ -253,6 +259,21 @@ fun BorrowerListItem(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 color = MaterialTheme.colorScheme.primary
             )
+            IconButton(
+                onClick = {
+                    borrowerViewModel.selectBorrower(borrower)
+                    borrowerViewModel.activateUpdateBorrowerScreen(true)
+
+                }, modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .size(20.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Editar",
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            }
         }
         Row(
             modifier = Modifier

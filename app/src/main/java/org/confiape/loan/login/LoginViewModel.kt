@@ -45,12 +45,12 @@ class LoginViewModel @Inject constructor(
             state = state.copy(
                 isLogging = true
             )
-            if (isJwtExpired(currentToken.removePrefix("AuthenticationToken="))) {
-                state=state.copy(
+            state = if (isJwtExpired(currentToken.removePrefix("AuthenticationToken="))) {
+                state.copy(
                     isLogging = false, isAuthenticated = false
                 )
             } else {
-                state=state.copy(
+                state.copy(
                     isLogging = false, isAuthenticated = true
                 )
             }
@@ -63,7 +63,7 @@ class LoginViewModel @Inject constructor(
 
     }
 
-    fun isJwtExpired(token: String): Boolean {
+    private fun isJwtExpired(token: String): Boolean {
         return try {
             val decodedJWT = JWT.decode(token)
             val expiration = decodedJWT.expiresAt ?: return true

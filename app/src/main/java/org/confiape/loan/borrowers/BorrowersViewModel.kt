@@ -40,6 +40,9 @@ class BorrowersViewModel @Inject constructor(
     var showAddBorrowerScreen by mutableStateOf(false)
         private set
 
+    var showUpdateBorrowerScreen by mutableStateOf(false)
+        private set
+
     var showLoanScreen by mutableStateOf(false)
         private set
 
@@ -81,6 +84,9 @@ class BorrowersViewModel @Inject constructor(
 
     fun activateAddBorrowerScreen(isActivate: Boolean) {
         showAddBorrowerScreen = isActivate
+    }
+    fun activateUpdateBorrowerScreen(isActivate: Boolean) {
+        showUpdateBorrowerScreen = isActivate
     }
 
     fun activateAddLoanScreen(isActivate: Boolean) {

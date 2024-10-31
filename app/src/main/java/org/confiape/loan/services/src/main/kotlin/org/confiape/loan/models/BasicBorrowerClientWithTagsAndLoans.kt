@@ -24,6 +24,8 @@ import com.google.gson.annotations.SerializedName
  *
  * @param id 
  * @param name 
+ * @param dni 
+ * @param title 
  * @param tags 
  * @param loans 
  */
@@ -36,6 +38,12 @@ data class BasicBorrowerClientWithTagsAndLoans (
 
     @SerializedName("name")
     val name: kotlin.String? = null,
+
+    @SerializedName("dni")
+    val dni: kotlin.String? = null,
+
+    @SerializedName("title")
+    val title: kotlin.String? = null,
 
     @SerializedName("tags")
     val tags: kotlin.collections.List<kotlin.String>? = null,
