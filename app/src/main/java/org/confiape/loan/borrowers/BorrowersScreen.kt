@@ -89,15 +89,12 @@ fun BorrowerScreen(
                 Content(borrowerViewModel, addLoanViewModel, infoLoanViewModel)
             }
             composable(Routes.Reports.route) {
-                LaunchedEffect(Unit) {
-                    reportsViewModel.update()
-                }
+                LaunchedEffect(Unit) { reportsViewModel.update() }
                 ReportsScreen(reportsViewModel)
             }
         }
     }
 }
-
 
 
 @Composable

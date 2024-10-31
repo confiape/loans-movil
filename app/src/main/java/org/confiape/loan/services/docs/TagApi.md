@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost*
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
 | [**apiTagGet**](TagApi.md#apiTagGet) | **GET** api/Tag |  |
+| [**apiTagGetWithLoansGet**](TagApi.md#apiTagGetWithLoansGet) | **GET** api/Tag/GetWithLoans |  |
 | [**apiTagIdDelete**](TagApi.md#apiTagIdDelete) | **DELETE** api/Tag/{id} |  |
 | [**apiTagIdGet**](TagApi.md#apiTagIdGet) | **GET** api/Tag/{id} |  |
 | [**apiTagIdPut**](TagApi.md#apiTagIdPut) | **PUT** api/Tag/{id} |  |
@@ -43,6 +44,43 @@ launch(Dispatchers.IO) {
 ### Return type
 
 [**TagDtoPaginationResponse**](TagDtoPaginationResponse.md)
+
+### Authorization
+
+
+Configure Bearer:
+    ApiClient().setBearerToken("TOKEN")
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain, application/json, text/json
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.confiape.loan.*
+//import org.confiape.loan.infrastructure.*
+//import org.confiape.loan.models.*
+
+val apiClient = ApiClient()
+apiClient.setBearerToken("TOKEN")
+val webService = apiClient.createWebservice(TagApi::class.java)
+
+launch(Dispatchers.IO) {
+    val result : kotlin.collections.List<TagAndLoanIdDto> = webService.apiTagGetWithLoansGet()
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**kotlin.collections.List&lt;TagAndLoanIdDto&gt;**](TagAndLoanIdDto.md)
 
 ### Authorization
 

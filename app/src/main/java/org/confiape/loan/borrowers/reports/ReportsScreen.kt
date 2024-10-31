@@ -1,6 +1,16 @@
 package org.confiape.loan.borrowers.reports
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.pdf.PdfDocument
+import android.os.Bundle
+import android.os.CancellationSignal
+import android.os.ParcelFileDescriptor
+import android.print.PageRange
+import android.print.PrintAttributes
+import android.print.PrintDocumentAdapter
+import android.print.PrintDocumentInfo
+import android.print.PrintManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,13 +27,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -35,9 +49,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.OffsetDateTime
@@ -46,37 +62,80 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("DefaultLocale")
 @Composable
 fun ReportsScreen(reportsViewModel: ReportsViewModel) {
+    val context = LocalContext.current
+
     if (reportsViewModel.isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(Modifier.align(Alignment.Center))
         }
     } else {
         Column {
-            DatePickerDocked(defaultDate = reportsViewModel.currentOffsetDateTime
-                ?: OffsetDateTime.now(),
-                onChangeDate = {
-                    reportsViewModel.onChangeCurrentDay(it)
-                })
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = { printReport(context, reportsViewModel) },
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                        .align(Alignment.CenterVertically)
+                ) {
+                    Text(text = "Imprimir Reporte")
+                }
+                DatePickerDocked(
+                    defaultDate = reportsViewModel.currentOffsetDateTime ?: OffsetDateTime.now(),
+                    onChangeDate = {
+                        reportsViewModel.onChangeCurrentDay(it)
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            MultiChoiceSegmentedButtonRow(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            ) {
+                reportsViewModel.tags.forEachIndexed { index, label ->
+                    SegmentedButton(
+                        shape = SegmentedButtonDefaults.itemShape(
+                            index = index, count = reportsViewModel.tags.size
+                        ),
+                        onCheckedChange = {
+                            label.id?.let { it1 -> reportsViewModel.onSelectTag(it1) }
+                        },
+                        checked = reportsViewModel.isSelectedTag(label.id),
+                    ) {
+                        Text(
+                            text = label.title ?: "",
+                            modifier = Modifier.fillMaxWidth(),
+                            maxLines = 1
+                        )
+                    }
+                }
+            }
+
             LazyColumn(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(items = reportsViewModel.paymentByDayDto.detailsDto ?: listOf(),
-                    itemContent = {
-                        Row(Modifier.fillMaxWidth()) {
-                            Text(text = it.name ?: "d", modifier = Modifier.weight(0.7f))
-                            Text(text = "S./", modifier = Modifier.weight(0.1f))
-                            Text(
-                                text = String.format("%,.2f", it.payment),
-                                modifier = Modifier.weight(0.2f),
-                                textAlign = TextAlign.End
-                            )
-                        }
+                items(items = reportsViewModel.filteredPaymentsByDayDto ?: listOf(), itemContent = {
+                    Row(Modifier.fillMaxWidth()) {
+                        Text(text = it.name ?: "d", modifier = Modifier.weight(0.7f))
+                        Text(text = "S./", modifier = Modifier.weight(0.1f))
+                        Text(
+                            text = String.format("%,.2f", it.payment),
+                            modifier = Modifier.weight(0.2f),
+                            textAlign = TextAlign.End
+                        )
+                    }
 
-                    })
+                })
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
@@ -112,13 +171,12 @@ fun ReportsScreen(reportsViewModel: ReportsViewModel) {
 fun DatePickerDocked(
     onChangeDate: (OffsetDateTime) -> Unit,
     defaultDate: OffsetDateTime = OffsetDateTime.now(),
-
-    ) {
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
+) {
     val defaultMillis = defaultDate.toInstant().toEpochMilli()
     var showDatePicker by remember { mutableStateOf(false) }
 
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = defaultMillis)
-
 
     LaunchedEffect(datePickerState.selectedDateMillis) {
         datePickerState.selectedDateMillis?.let {
@@ -132,7 +190,7 @@ fun DatePickerDocked(
         convertMillisToDate(it)
     } ?: ""
 
-    Box(modifier = Modifier.fillMaxWidth()) {
+    Box(modifier = modifier) {
         OutlinedTextField(value = selectedDate,
             onValueChange = { },
             label = { Text("Elige el día") },
@@ -166,6 +224,7 @@ fun DatePickerDocked(
     }
 }
 
+
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("dd-MM-yyyy", Locale("es", "PE"))
     formatter.timeZone = TimeZone.getTimeZone("UTC")
@@ -176,5 +235,134 @@ fun convertMillisToDateTimeOffset(millis: Long): OffsetDateTime {
     val instant = Instant.ofEpochMilli(millis)
     return OffsetDateTime.ofInstant(
         instant, ZoneOffset.UTC
+    )
+}
+
+fun printReport(context: Context, reportsViewModel: ReportsViewModel) {
+
+    val printManager = context.getSystemService(Context.PRINT_SERVICE) as PrintManager
+    val printAdapter = object : PrintDocumentAdapter() {
+        override fun onStart() {
+
+        }
+
+        override fun onLayout(
+            oldAttributes: PrintAttributes?,
+            newAttributes: PrintAttributes?,
+            cancellationSignal: CancellationSignal?,
+            callback: LayoutResultCallback?,
+            extras: Bundle?
+        ) {
+            if (cancellationSignal?.isCanceled == true) {
+                callback?.onLayoutCancelled()
+                return
+            }
+
+
+            val info = PrintDocumentInfo.Builder("report_payment_by_day.pdf")
+                .setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
+
+                .build()
+
+            callback?.onLayoutFinished(info, true)
+        }
+
+        @SuppressLint("DefaultLocale")
+        override fun onWrite(
+            pageRanges: Array<out PageRange>?,
+            destination: ParcelFileDescriptor?,
+            cancellationSignal: CancellationSignal?,
+            callback: WriteResultCallback?
+        ) {
+            val pdfDocument = PdfDocument()
+            var pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
+            var page = pdfDocument.startPage(pageInfo)
+
+            var canvas = page.canvas
+            val paint = android.graphics.Paint()
+            paint.textSize = 14f
+
+            // Header
+            canvas.drawText("Reporte de Pagos por Día", 80f, 50f, paint)
+            canvas.drawText("Fecha: ${reportsViewModel.currentOffsetDateTime}", 80f, 100f, paint)
+
+            // Table Headers
+            var currentY = 160f
+            paint.isFakeBoldText = true
+            canvas.drawText("Nombre", 80f, currentY, paint)
+            canvas.drawText("Fecha Préstamo", 200f, currentY, paint)
+            canvas.drawText("Monto Prestado (S./)", 350f, currentY, paint)
+            canvas.drawText("Monto Pagado (S./)", 500f, currentY, paint)
+            paint.isFakeBoldText = false
+
+            // Table Content
+            currentY += 30f
+            var currentPageNumber = 1
+            reportsViewModel.paymentByDayDto.detailsDto?.forEach {
+                if (currentY > 750f) { // Check if we need a new page
+                    pdfDocument.finishPage(page)
+                    currentPageNumber++
+                    pageInfo = PdfDocument.PageInfo.Builder(595, 842, currentPageNumber).create()
+                    page = pdfDocument.startPage(pageInfo)
+                    canvas = page.canvas
+                    currentY = 50f
+                    paint.isFakeBoldText = true
+                    canvas.drawText("Nombre", 80f, currentY, paint)
+                    canvas.drawText("Fecha Préstamo", 200f, currentY, paint)
+                    canvas.drawText("Monto Prestado (S./)", 350f, currentY, paint)
+                    canvas.drawText("Monto Pagado (S./)", 500f, currentY, paint)
+                    paint.isFakeBoldText = false
+                    currentY += 30f
+                }
+                canvas.drawText(it.name ?: "N/A", 80f, currentY, paint)
+                canvas.drawText(
+                    it.loanDate?.toLocalDate().toString(), 200f, currentY, paint
+                )
+                canvas.drawText(String.format("%,.2f", it.amount ?: 0.0), 350f, currentY, paint)
+                canvas.drawText(String.format("%,.2f", it.payment), 500f, currentY, paint)
+                currentY += 30f
+            }
+
+            // Total Payment
+            if (currentY > 750f) {
+                pdfDocument.finishPage(page)
+                currentPageNumber++
+                pageInfo = PdfDocument.PageInfo.Builder(595, 842, currentPageNumber).create()
+                page = pdfDocument.startPage(pageInfo)
+                canvas = page.canvas
+                currentY = 50f
+            }
+            currentY += 30f
+            paint.isFakeBoldText = true
+            canvas.drawText(
+                "Total Pagado: S./ ${
+                    String.format(
+                        "%,.2f", reportsViewModel.totalPayment
+                    )
+                }", 80f, currentY, paint
+            )
+
+            pdfDocument.finishPage(page)
+
+            try {
+                destination?.fileDescriptor?.let {
+                    FileOutputStream(it).use { output ->
+                        pdfDocument.writeTo(output)
+                    }
+                }
+                callback?.onWriteFinished(arrayOf(PageRange.ALL_PAGES))
+            } catch (e: Exception) {
+                callback?.onWriteFailed(e.message)
+            } finally {
+                pdfDocument.close()
+            }
+        }
+    }
+
+    printManager.print(
+        "ReportPaymentByDayPrintJob",
+        printAdapter,
+        PrintAttributes.Builder().setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+            .setDuplexMode(PrintAttributes.DUPLEX_MODE_LONG_EDGE).build()
     )
 }

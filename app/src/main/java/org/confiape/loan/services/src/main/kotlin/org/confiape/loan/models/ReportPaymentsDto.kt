@@ -21,7 +21,9 @@ import com.google.gson.annotations.SerializedName
 /**
  * 
  *
+ * @param id 
  * @param name 
+ * @param tagId 
  * @param loanDate 
  * @param amount 
  * @param payment 
@@ -30,8 +32,14 @@ import com.google.gson.annotations.SerializedName
 
 data class ReportPaymentsDto (
 
+    @SerializedName("id")
+    val id: java.util.UUID? = null,
+
     @SerializedName("name")
     val name: kotlin.String? = null,
+
+    @SerializedName("tagId")
+    val tagId: java.util.UUID? = null,
 
     @SerializedName("loanDate")
     val loanDate: java.time.OffsetDateTime? = null,

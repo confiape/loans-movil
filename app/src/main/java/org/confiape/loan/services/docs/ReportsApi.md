@@ -25,7 +25,7 @@ val webService = apiClient.createWebservice(ReportsApi::class.java)
 val dateTime : java.time.OffsetDateTime = 2013-10-20T19:20:30+01:00 // java.time.OffsetDateTime | 
 
 launch(Dispatchers.IO) {
-    webService.apiReportsGetReportsByDayGet(dateTime)
+    val result : java.io.File = webService.apiReportsGetReportsByDayGet(dateTime)
 }
 ```
 
@@ -36,7 +36,7 @@ launch(Dispatchers.IO) {
 
 ### Return type
 
-null (empty response body)
+[**java.io.File**](java.io.File.md)
 
 ### Authorization
 
@@ -47,7 +47,7 @@ Configure Bearer:
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: text/plain, application/json, text/json
 
 
 

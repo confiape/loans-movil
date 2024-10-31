@@ -6,6 +6,7 @@ import retrofit2.Response
 import okhttp3.RequestBody
 import com.google.gson.annotations.SerializedName
 
+import org.confiape.loan.models.TagAndLoanIdDto
 import org.confiape.loan.models.TagDto
 import org.confiape.loan.models.TagDtoPaginationResponse
 import org.confiape.loan.models.UpdateTagDto
@@ -24,6 +25,17 @@ interface TagApi {
      */
     @GET("api/Tag")
     suspend fun apiTagGet(@Query("PageSize") pageSize: kotlin.Int? = null, @Query("CurrentPage") currentPage: kotlin.Int? = null, @Query("OrderBy") orderBy: @JvmSuppressWildcards kotlin.collections.List<kotlin.String>? = null): Response<TagDtoPaginationResponse>
+
+    /**
+     * 
+     * 
+     * Responses:
+     *  - 200: Success
+     *
+     * @return [kotlin.collections.List<TagAndLoanIdDto>]
+     */
+    @GET("api/Tag/GetWithLoans")
+    suspend fun apiTagGetWithLoansGet(): Response<kotlin.collections.List<TagAndLoanIdDto>>
 
     /**
      * 

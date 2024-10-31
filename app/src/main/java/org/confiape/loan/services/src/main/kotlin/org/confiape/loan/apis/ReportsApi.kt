@@ -4,6 +4,7 @@ import org.confiape.loan.infrastructure.CollectionFormats.*
 import retrofit2.http.*
 import retrofit2.Response
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import com.google.gson.annotations.SerializedName
 
 import org.confiape.loan.models.ReportPaymentByDayDto
@@ -17,10 +18,10 @@ interface ReportsApi {
      *  - 200: Success
      *
      * @param dateTime  (optional)
-     * @return [Unit]
+     * @return [ResponseBody]
      */
     @GET("api/Reports/GetReportsByDay")
-    suspend fun apiReportsGetReportsByDayGet(@Query("dateTime") dateTime: java.time.OffsetDateTime? = null): Response<Unit>
+    suspend fun apiReportsGetReportsByDayGet(@Query("dateTime") dateTime: java.time.OffsetDateTime? = null): Response<ResponseBody>
 
     /**
      * 

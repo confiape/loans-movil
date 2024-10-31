@@ -74,6 +74,7 @@ All URIs are relative to *http://localhost*
 | *ReportsApi* | [**apiReportsReportPaymentByDayGet**](docs/ReportsApi.md#apireportsreportpaymentbydayget) | **GET** api/Reports/ReportPaymentByDay |  |
 | *ReportsApi* | [**apiReportsReportPaymentByLoanGet**](docs/ReportsApi.md#apireportsreportpaymentbyloanget) | **GET** api/Reports/ReportPaymentByLoan |  |
 | *TagApi* | [**apiTagGet**](docs/TagApi.md#apitagget) | **GET** api/Tag |  |
+| *TagApi* | [**apiTagGetWithLoansGet**](docs/TagApi.md#apitaggetwithloansget) | **GET** api/Tag/GetWithLoans |  |
 | *TagApi* | [**apiTagIdDelete**](docs/TagApi.md#apitagiddelete) | **DELETE** api/Tag/{id} |  |
 | *TagApi* | [**apiTagIdGet**](docs/TagApi.md#apitagidget) | **GET** api/Tag/{id} |  |
 | *TagApi* | [**apiTagIdPut**](docs/TagApi.md#apitagidput) | **PUT** api/Tag/{id} |  |
@@ -116,6 +117,7 @@ All URIs are relative to *http://localhost*
  - [org.confiape.loan.models.SimpleLoanDtoAndPayments](docs/SimpleLoanDtoAndPayments.md)
  - [org.confiape.loan.models.SimplePayments](docs/SimplePayments.md)
  - [org.confiape.loan.models.Tag](docs/Tag.md)
+ - [org.confiape.loan.models.TagAndLoanIdDto](docs/TagAndLoanIdDto.md)
  - [org.confiape.loan.models.TagBorrowerClient](docs/TagBorrowerClient.md)
  - [org.confiape.loan.models.TagDto](docs/TagDto.md)
  - [org.confiape.loan.models.TagDtoPaginationResponse](docs/TagDtoPaginationResponse.md)
