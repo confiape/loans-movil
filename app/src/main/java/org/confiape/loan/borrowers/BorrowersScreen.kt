@@ -4,7 +4,9 @@
 
 package org.confiape.loan.borrowers
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -45,6 +47,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -64,6 +67,8 @@ import org.confiape.loan.borrowers.reports.ReportsViewModel
 import org.confiape.loan.borrowers.updateBorrower.UpdateBorrowerScreen
 import org.confiape.loan.core.Routes
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
+import java.time.OffsetDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 
@@ -245,8 +250,8 @@ fun BorrowerListItem(
             .padding(vertical = 8.dp)
     ) {
         Row(
-            Modifier.fillMaxWidth()
-            , horizontalArrangement = Arrangement.SpaceBetween
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = borrower.name ?: "",
@@ -263,7 +268,6 @@ fun BorrowerListItem(
                 onClick = {
                     borrowerViewModel.selectBorrower(borrower)
                     borrowerViewModel.activateUpdateBorrowerScreen(true)
-
                 }, modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .size(20.dp)
@@ -285,16 +289,30 @@ fun BorrowerListItem(
             ) {
                 items(items = borrower.loans!!, itemContent = {
                     val amount = it.amount!!.plus(it.amount * it.interest!! / 100)
-                    TextButton(onClick = {
-                        borrowerViewModel.selectBorrower(borrower)
-                        borrowerViewModel.selectLoan(it)
-                    }) {
-                        Column {
-                            Text(text = "S/. $amount")
-                            Text(
-                                text = DateTimeFormatter.ofPattern("dd MMMM").format(it.dateTime),
-                                style = MaterialTheme.typography.labelSmall
-                            )
+                    val isPaidToday = it.payments?.any { payment ->
+                        payment.dateTime?.toLocalDate() == OffsetDateTime.now(ZoneId.systemDefault()).toLocalDate()
+                    } == true
+                    val backgroundColor = if (isPaidToday)
+                        Color(0xFF2CDA32) else
+                        Color(0xFFE99A9A)
+
+                    Box(
+                        modifier = Modifier
+                            .background(color = backgroundColor)
+                            .padding(4.dp)
+                    ) {
+                        TextButton(onClick = {
+                            borrowerViewModel.selectBorrower(borrower)
+                            borrowerViewModel.selectLoan(it)
+                        }) {
+                            Column {
+                                Text(text = "S/. $amount")
+                                Text(
+                                    text = DateTimeFormatter.ofPattern("dd MMMM").format(it.dateTime),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 })
@@ -308,7 +326,5 @@ fun BorrowerListItem(
             }
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
-
-
     }
 }

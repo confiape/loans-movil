@@ -109,17 +109,19 @@ apiClient.setBearerToken("TOKEN")
 val webService = apiClient.createWebservice(PaymentApi::class.java)
 val id : java.util.UUID = 38400000-8cf0-11bd-b23e-10b96e4ef00d // java.util.UUID | 
 val amount : kotlin.Double = 1.2 // kotlin.Double | 
+val isYape : kotlin.Boolean = true // kotlin.Boolean | 
 
 launch(Dispatchers.IO) {
-    val result : Payment = webService.apiPaymentIdPut(id, amount)
+    val result : Payment = webService.apiPaymentIdPut(id, amount, isYape)
 }
 ```
 
 ### Parameters
 | **id** | **java.util.UUID**|  | |
+| **amount** | **kotlin.Double**|  | [optional] |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **amount** | **kotlin.Double**|  | [optional] |
+| **isYape** | **kotlin.Boolean**|  | [optional] |
 
 ### Return type
 

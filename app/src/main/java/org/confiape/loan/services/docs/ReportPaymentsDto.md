@@ -10,6 +10,7 @@
 | **loanDate** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **amount** | **kotlin.Double** |  |  [optional] |
 | **payment** | **kotlin.Double** |  |  [optional] |
+| **isYape** | **kotlin.Boolean** |  |  [optional] |
 
 
 

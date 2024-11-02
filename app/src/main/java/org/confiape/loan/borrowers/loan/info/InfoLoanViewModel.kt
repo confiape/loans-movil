@@ -32,7 +32,7 @@ class InfoLoanViewModel @Inject constructor(
         amountToPAy = it
     }
 
-    fun pay(loanId: UUID, borrowersViewModel: BorrowersViewModel) {
+    fun pay(loanId: UUID, borrowersViewModel: BorrowersViewModel,isYape:Boolean) {
         isDisablePayButton = true
         viewModelScope.launch {
             try {
@@ -40,7 +40,8 @@ class InfoLoanViewModel @Inject constructor(
                     NewPaymentDto(
                         loanId = loanId,
                         amount = amountToPAy.toDouble(),
-                        location = PointDto(0.0, 0.0)
+                        location = PointDto(0.0, 0.0),
+                        isYape = isYape
                     )
                 )
                 if (response.code() == 200) {
@@ -62,14 +63,16 @@ class InfoLoanViewModel @Inject constructor(
         }
     }
 
-    fun editPay(id: UUID?, borrowerViewModel: BorrowersViewModel) {
+    fun editPay(id: UUID?, borrowerViewModel: BorrowersViewModel,isYape:Boolean) {
 
         isDisablePayButton = true
         viewModelScope.launch {
             try {
                 id?.let {
                     val response = paymentApi.apiPaymentIdPut(
-                        it, amountToPAy.toDouble()
+                        id = it,
+                        amount = amountToPAy.toDouble(),
+                        isYape= isYape
                     )
                     if (response.code() == 200) {
                         borrowerViewModel.updateLocalPayments(

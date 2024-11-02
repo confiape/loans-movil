@@ -9,10 +9,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -26,6 +31,9 @@ import java.time.format.DateTimeFormatter
 fun InfoLoanScreen(borrowerViewModel: BorrowersViewModel, infoLoanViewModel: InfoLoanViewModel) {
 
     if (borrowerViewModel.selectedLoan != null) {
+        var checked by remember { mutableStateOf(false) }
+
+
         AlertDialog(onDismissRequest = {
             borrowerViewModel.selectLoan(null)
 
@@ -66,13 +74,26 @@ fun InfoLoanScreen(borrowerViewModel: BorrowersViewModel, infoLoanViewModel: Inf
                 }
                 Text(text = "Pagos")
                 Row {
-                    OutlinedTextField(modifier = Modifier.weight(2f),
+                    OutlinedTextField(modifier = Modifier.weight(1.5f),
                         value = infoLoanViewModel.amountToPAy,
                         label = { Text(text = "Monto") },
                         singleLine = true,
                         maxLines = 1,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         onValueChange = { infoLoanViewModel.OnChangeAmountToPay(it) })
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        Text(
+                            "Yape",
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                        Checkbox(
+                            checked = checked,
+                            onCheckedChange = { checked = it }
+                        )
+                    }
                     Button(modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically),
@@ -84,11 +105,15 @@ fun InfoLoanScreen(borrowerViewModel: BorrowersViewModel, infoLoanViewModel: Inf
                             }
                             if (pay == null) {
                                 infoLoanViewModel.pay(
-                                    borrowerViewModel.selectedLoan!!.id!!, borrowerViewModel
+                                    borrowerViewModel.selectedLoan!!.id!!,
+                                    borrowerViewModel,
+                                    checked
                                 )
                             } else {
                                 infoLoanViewModel.editPay(
-                                    pay.id, borrowerViewModel
+                                    pay.id,
+                                    borrowerViewModel,
+                                    checked
                                 )
                             }
 

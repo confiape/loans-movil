@@ -46,10 +46,11 @@ interface PaymentApi {
      *
      * @param id 
      * @param amount  (optional)
+     * @param isYape  (optional)
      * @return [Payment]
      */
     @PUT("api/Payment/{id}")
-    suspend fun apiPaymentIdPut(@Path("id") id: java.util.UUID, @Query("Amount") amount: kotlin.Double? = null): Response<Payment>
+    suspend fun apiPaymentIdPut(@Path("id") id: java.util.UUID, @Query("Amount") amount: kotlin.Double? = null, @Query("IsYape") isYape: kotlin.Boolean? = null): Response<Payment>
 
     /**
      * 

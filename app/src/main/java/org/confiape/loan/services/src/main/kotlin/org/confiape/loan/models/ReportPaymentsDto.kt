@@ -27,6 +27,7 @@ import com.google.gson.annotations.SerializedName
  * @param loanDate 
  * @param amount 
  * @param payment 
+ * @param isYape 
  */
 
 
@@ -48,7 +49,10 @@ data class ReportPaymentsDto (
     val amount: kotlin.Double? = null,
 
     @SerializedName("payment")
-    val payment: kotlin.Double? = null
+    val payment: kotlin.Double? = null,
+
+    @SerializedName("isYape")
+    val isYape: kotlin.Boolean? = null
 
 ) {
 

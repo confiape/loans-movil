@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ReportsViewModel @Inject constructor(
     private val reportsApi: ReportsApi,
-    private val tagRepository: TagRepository,
+    private val tagRepository: TagRepository
 ) : ViewModel() {
 
     var paymentByDayDto by mutableStateOf(ReportPaymentByDayDto())
@@ -94,7 +94,7 @@ class ReportsViewModel @Inject constructor(
                 }
             }
         }
-        totalPayment = filteredPaymentsByDayDto.sumOf { it.amount ?: 0.0 }
+        totalPayment = filteredPaymentsByDayDto.sumOf { it.payment ?: 0.0 }
     }
 
     fun isSelectedTag(id: UUID?): Boolean {

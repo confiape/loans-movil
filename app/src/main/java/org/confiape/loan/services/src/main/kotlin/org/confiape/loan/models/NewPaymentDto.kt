@@ -24,6 +24,7 @@ import com.google.gson.annotations.SerializedName
  *
  * @param loanId 
  * @param amount 
+ * @param isYape 
  * @param location 
  */
 
@@ -35,6 +36,9 @@ data class NewPaymentDto (
 
     @SerializedName("amount")
     val amount: kotlin.Double? = null,
+
+    @SerializedName("isYape")
+    val isYape: kotlin.Boolean? = null,
 
     @SerializedName("location")
     val location: PointDto? = null
