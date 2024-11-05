@@ -22,6 +22,7 @@ class AddBorrowerViewModel @Inject constructor(
     private val borrowerApi: BorrowerApi
 ) : ViewModel() {
     var name by mutableStateOf("")
+    var alias by mutableStateOf("")
     var dni by mutableStateOf("")
     var tags by mutableStateOf<List<TagDto>>(listOf())
     private var selectedTags by mutableStateOf<List<TagDto>>(listOf())
@@ -39,6 +40,9 @@ class AddBorrowerViewModel @Inject constructor(
 
     fun onChangeDni(newText: String) {
         dni = newText
+    }
+    fun onChangeAlias(newText: String) {
+        alias = newText
     }
 
     fun onSelectedTags(tagDto: TagDto) {
@@ -59,7 +63,7 @@ class AddBorrowerViewModel @Inject constructor(
             borrowerApi.apiBorrowerPost(
                 BorrowerClientDtoNewBorrowerClientDto(
                     tagIdList = selectedTags.map { it.id!! }, borrowerClientDto = BorrowerClientDto(
-                        name = name, dni = dni, id = UUID.randomUUID()
+                        name = name, dni = dni, id = UUID.randomUUID(), title = alias
                     )
                 )
             )

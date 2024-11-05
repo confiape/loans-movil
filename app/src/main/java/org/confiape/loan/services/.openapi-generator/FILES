@@ -17,6 +17,7 @@ docs/CountryApi.md
 docs/CountryDto.md
 docs/CreateLoanDto.md
 docs/DashBoardApi.md
+docs/FileApi.md
 docs/Loan.md
 docs/LoanApi.md
 docs/LoanType.md
@@ -31,6 +32,7 @@ docs/PaymentDto.md
 docs/PaymentDtoPaginationResponse.md
 docs/PersonDto.md
 docs/PointDto.md
+docs/RefinanceDto.md
 docs/ReportPaymentByDayDto.md
 docs/ReportPaymentByLoanDetailsDto.md
 docs/ReportPaymentByLoanDto.md
@@ -50,6 +52,7 @@ docs/TotalLoanAmountByClientDto.md
 docs/UpdateBorrowerClientDto.md
 docs/UpdateBorrowerClientDtoNewBorrowerClientDto.md
 docs/UpdateTagDto.md
+docs/UserDto.md
 gradle/wrapper/gradle-wrapper.jar
 gradle/wrapper/gradle-wrapper.properties
 gradlew
@@ -59,6 +62,7 @@ src/main/kotlin/org/confiape/loan/apis/AuthenticateApi.kt
 src/main/kotlin/org/confiape/loan/apis/BorrowerApi.kt
 src/main/kotlin/org/confiape/loan/apis/CountryApi.kt
 src/main/kotlin/org/confiape/loan/apis/DashBoardApi.kt
+src/main/kotlin/org/confiape/loan/apis/FileApi.kt
 src/main/kotlin/org/confiape/loan/apis/LoanApi.kt
 src/main/kotlin/org/confiape/loan/apis/PaymentApi.kt
 src/main/kotlin/org/confiape/loan/apis/ReportsApi.kt
@@ -97,6 +101,7 @@ src/main/kotlin/org/confiape/loan/models/PaymentDto.kt
 src/main/kotlin/org/confiape/loan/models/PaymentDtoPaginationResponse.kt
 src/main/kotlin/org/confiape/loan/models/PersonDto.kt
 src/main/kotlin/org/confiape/loan/models/PointDto.kt
+src/main/kotlin/org/confiape/loan/models/RefinanceDto.kt
 src/main/kotlin/org/confiape/loan/models/ReportPaymentByDayDto.kt
 src/main/kotlin/org/confiape/loan/models/ReportPaymentByLoanDetailsDto.kt
 src/main/kotlin/org/confiape/loan/models/ReportPaymentByLoanDto.kt
@@ -114,10 +119,12 @@ src/main/kotlin/org/confiape/loan/models/TotalLoanAmountByClientDto.kt
 src/main/kotlin/org/confiape/loan/models/UpdateBorrowerClientDto.kt
 src/main/kotlin/org/confiape/loan/models/UpdateBorrowerClientDtoNewBorrowerClientDto.kt
 src/main/kotlin/org/confiape/loan/models/UpdateTagDto.kt
+src/main/kotlin/org/confiape/loan/models/UserDto.kt
 src/test/kotlin/org/confiape/loan/apis/AuthenticateApiTest.kt
 src/test/kotlin/org/confiape/loan/apis/BorrowerApiTest.kt
 src/test/kotlin/org/confiape/loan/apis/CountryApiTest.kt
 src/test/kotlin/org/confiape/loan/apis/DashBoardApiTest.kt
+src/test/kotlin/org/confiape/loan/apis/FileApiTest.kt
 src/test/kotlin/org/confiape/loan/apis/LoanApiTest.kt
 src/test/kotlin/org/confiape/loan/apis/PaymentApiTest.kt
 src/test/kotlin/org/confiape/loan/apis/ReportsApiTest.kt
@@ -147,6 +154,7 @@ src/test/kotlin/org/confiape/loan/models/PaymentDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/PaymentTest.kt
 src/test/kotlin/org/confiape/loan/models/PersonDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/PointDtoTest.kt
+src/test/kotlin/org/confiape/loan/models/RefinanceDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/ReportPaymentByDayDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/ReportPaymentByLoanDetailsDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/ReportPaymentByLoanDtoTest.kt
@@ -164,3 +172,4 @@ src/test/kotlin/org/confiape/loan/models/TotalLoanAmountByClientDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/UpdateBorrowerClientDtoNewBorrowerClientDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/UpdateBorrowerClientDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/UpdateTagDtoTest.kt
+src/test/kotlin/org/confiape/loan/models/UserDtoTest.kt

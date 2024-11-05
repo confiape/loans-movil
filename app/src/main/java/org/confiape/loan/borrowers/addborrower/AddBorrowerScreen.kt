@@ -54,6 +54,13 @@ fun AddBorrowerScreen(
                     singleLine = true,
                     label = { Text(text = "Nombre") },
                 )
+                OutlinedTextField(
+                    value = viewModel.alias,
+                    onValueChange = { viewModel.onChangeAlias(it) },
+                    maxLines = 1,
+                    singleLine = true,
+                    label = { Text(text = "Alias") },
+                )
                 OutlinedTextField(value = viewModel.dni,
                     maxLines = 1,
                     singleLine = true,

@@ -8,6 +8,7 @@
 | **background** | **kotlin.String** |  |  [optional] |
 | **name** | **kotlin.String** |  |  [optional] |
 | **dni** | **kotlin.String** |  |  [optional] |
+| **dniPath** | **kotlin.String** |  |  [optional] |
 | **email** | **kotlin.String** |  |  [optional] |
 | **phoneNumber** | **kotlin.String** |  |  [optional] |
 | **title** | **kotlin.String** |  |  [optional] |

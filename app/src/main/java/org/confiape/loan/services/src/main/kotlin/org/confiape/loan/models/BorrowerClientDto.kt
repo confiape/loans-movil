@@ -26,6 +26,7 @@ import com.google.gson.annotations.SerializedName
  * @param background 
  * @param name 
  * @param dni 
+ * @param dniPath 
  * @param email 
  * @param phoneNumber 
  * @param title 
@@ -54,6 +55,9 @@ data class BorrowerClientDto (
 
     @SerializedName("dni")
     val dni: kotlin.String? = null,
+
+    @SerializedName("dniPath")
+    val dniPath: kotlin.String? = null,
 
     @SerializedName("email")
     val email: kotlin.String? = null,

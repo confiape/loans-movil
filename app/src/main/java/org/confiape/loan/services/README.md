@@ -46,6 +46,7 @@ All URIs are relative to *http://localhost*
 | Class | Method | HTTP request | Description |
 | ------------ | ------------- | ------------- | ------------- |
 | *AuthenticateApi* | [**apiAuthenticateAssignRoleToUserIdPost**](docs/AuthenticateApi.md#apiauthenticateassignroletouseridpost) | **POST** api/Authenticate/AssignRoleToUser/{id} |  |
+| *AuthenticateApi* | [**apiAuthenticateGetAllUsersPost**](docs/AuthenticateApi.md#apiauthenticategetalluserspost) | **POST** api/Authenticate/GetAllUsers |  |
 | *AuthenticateApi* | [**apiAuthenticateGetAuthorizationTokenPost**](docs/AuthenticateApi.md#apiauthenticategetauthorizationtokenpost) | **POST** api/Authenticate/GetAuthorizationToken |  |
 | *AuthenticateApi* | [**apiAuthenticateLogInPost**](docs/AuthenticateApi.md#apiauthenticateloginpost) | **POST** api/Authenticate/LogIn |  |
 | *AuthenticateApi* | [**apiAuthenticateLogOutGet**](docs/AuthenticateApi.md#apiauthenticatelogoutget) | **GET** api/Authenticate/LogOut |  |
@@ -61,11 +62,13 @@ All URIs are relative to *http://localhost*
 | *DashBoardApi* | [**apiDashBoardGetAverageInterestByMonthGet**](docs/DashBoardApi.md#apidashboardgetaverageinterestbymonthget) | **GET** api/DashBoard/GetAverageInterestByMonth |  |
 | *DashBoardApi* | [**apiDashBoardGetLoansByMonthGet**](docs/DashBoardApi.md#apidashboardgetloansbymonthget) | **GET** api/DashBoard/GetLoansByMonth |  |
 | *DashBoardApi* | [**apiDashBoardGetTotalLoanAmountByClientGet**](docs/DashBoardApi.md#apidashboardgettotalloanamountbyclientget) | **GET** api/DashBoard/GetTotalLoanAmountByClient |  |
+| *FileApi* | [**apiFilePost**](docs/FileApi.md#apifilepost) | **POST** api/File |  |
 | *LoanApi* | [**apiLoanGet**](docs/LoanApi.md#apiloanget) | **GET** api/Loan |  |
 | *LoanApi* | [**apiLoanIdDelete**](docs/LoanApi.md#apiloaniddelete) | **DELETE** api/Loan/{id} |  |
 | *LoanApi* | [**apiLoanIdGet**](docs/LoanApi.md#apiloanidget) | **GET** api/Loan/{id} |  |
 | *LoanApi* | [**apiLoanIdPut**](docs/LoanApi.md#apiloanidput) | **PUT** api/Loan/{id} |  |
 | *LoanApi* | [**apiLoanPost**](docs/LoanApi.md#apiloanpost) | **POST** api/Loan |  |
+| *LoanApi* | [**apiLoanRefinancePost**](docs/LoanApi.md#apiloanrefinancepost) | **POST** api/Loan/Refinance |  |
 | *PaymentApi* | [**apiPaymentGet**](docs/PaymentApi.md#apipaymentget) | **GET** api/Payment |  |
 | *PaymentApi* | [**apiPaymentIdGet**](docs/PaymentApi.md#apipaymentidget) | **GET** api/Payment/{id} |  |
 | *PaymentApi* | [**apiPaymentIdPut**](docs/PaymentApi.md#apipaymentidput) | **PUT** api/Payment/{id} |  |
@@ -109,6 +112,7 @@ All URIs are relative to *http://localhost*
  - [org.confiape.loan.models.PaymentDtoPaginationResponse](docs/PaymentDtoPaginationResponse.md)
  - [org.confiape.loan.models.PersonDto](docs/PersonDto.md)
  - [org.confiape.loan.models.PointDto](docs/PointDto.md)
+ - [org.confiape.loan.models.RefinanceDto](docs/RefinanceDto.md)
  - [org.confiape.loan.models.ReportPaymentByDayDto](docs/ReportPaymentByDayDto.md)
  - [org.confiape.loan.models.ReportPaymentByLoanDetailsDto](docs/ReportPaymentByLoanDetailsDto.md)
  - [org.confiape.loan.models.ReportPaymentByLoanDto](docs/ReportPaymentByLoanDto.md)
@@ -126,6 +130,7 @@ All URIs are relative to *http://localhost*
  - [org.confiape.loan.models.UpdateBorrowerClientDto](docs/UpdateBorrowerClientDto.md)
  - [org.confiape.loan.models.UpdateBorrowerClientDtoNewBorrowerClientDto](docs/UpdateBorrowerClientDtoNewBorrowerClientDto.md)
  - [org.confiape.loan.models.UpdateTagDto](docs/UpdateTagDto.md)
+ - [org.confiape.loan.models.UserDto](docs/UserDto.md)
 
 
 <a id="documentation-for-authorization"></a>

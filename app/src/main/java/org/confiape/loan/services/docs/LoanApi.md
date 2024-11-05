@@ -9,6 +9,7 @@ All URIs are relative to *http://localhost*
 | [**apiLoanIdGet**](LoanApi.md#apiLoanIdGet) | **GET** api/Loan/{id} |  |
 | [**apiLoanIdPut**](LoanApi.md#apiLoanIdPut) | **PUT** api/Loan/{id} |  |
 | [**apiLoanPost**](LoanApi.md#apiLoanPost) | **POST** api/Loan |  |
+| [**apiLoanRefinancePost**](LoanApi.md#apiLoanRefinancePost) | **POST** api/Loan/Refinance |  |
 
 
 
@@ -211,6 +212,46 @@ launch(Dispatchers.IO) {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **createLoanDto** | [**CreateLoanDto**](CreateLoanDto.md)|  | [optional] |
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+
+Configure Bearer:
+    ApiClient().setBearerToken("TOKEN")
+
+### HTTP request headers
+
+ - **Content-Type**: application/json, text/json, application/*+json
+ - **Accept**: Not defined
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.confiape.loan.*
+//import org.confiape.loan.infrastructure.*
+//import org.confiape.loan.models.*
+
+val apiClient = ApiClient()
+apiClient.setBearerToken("TOKEN")
+val webService = apiClient.createWebservice(LoanApi::class.java)
+val refinanceDto : RefinanceDto =  // RefinanceDto | 
+
+launch(Dispatchers.IO) {
+    webService.apiLoanRefinancePost(refinanceDto)
+}
+```
+
+### Parameters
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **refinanceDto** | [**RefinanceDto**](RefinanceDto.md)|  | [optional] |
 
 ### Return type
 

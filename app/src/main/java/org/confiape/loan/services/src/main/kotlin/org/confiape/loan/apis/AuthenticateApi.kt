@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName
 import org.confiape.loan.models.LoginDto
 import org.confiape.loan.models.LoginResponse
 import org.confiape.loan.models.TokenDto
+import org.confiape.loan.models.UserDto
 
 interface AuthenticateApi {
     /**
@@ -23,6 +24,17 @@ interface AuthenticateApi {
      */
     @POST("api/Authenticate/AssignRoleToUser/{id}")
     suspend fun apiAuthenticateAssignRoleToUserIdPost(@Path("id") id: kotlin.String, @Body requestBody: kotlin.collections.List<kotlin.String>? = null): Response<Unit>
+
+    /**
+     * 
+     * 
+     * Responses:
+     *  - 200: Success
+     *
+     * @return [kotlin.collections.List<UserDto>]
+     */
+    @POST("api/Authenticate/GetAllUsers")
+    suspend fun apiAuthenticateGetAllUsersPost(): Response<kotlin.collections.List<UserDto>>
 
     /**
      * 

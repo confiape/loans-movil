@@ -1,7 +1,5 @@
-package org.confiape.loan.borrowers.loan.add
+package org.confiape.loan.borrowers.loan.refinance
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,46 +10,47 @@ import kotlinx.coroutines.launch
 import org.confiape.loan.apis.LoanApi
 import org.confiape.loan.borrowers.BorrowersViewModel
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
-import org.confiape.loan.models.CreateLoanDto
 import org.confiape.loan.models.LoanType
+import org.confiape.loan.models.RefinanceDto
 import javax.inject.Inject
 
 @HiltViewModel
-class AddLoanViewModel @Inject constructor(
+class RefinanceViewModel @Inject constructor(
     private val loanApi: LoanApi,
 ) : ViewModel() {
 
 
-
     var amount by mutableStateOf("")
-    var interest by mutableStateOf("8.4")
+    var interest by mutableStateOf("10")
     var numberDate by mutableStateOf("27")
 
     var selectedTypeLoan by mutableStateOf("Diario")
 
     fun insert(borrowersViewModel: BorrowersViewModel) {
         viewModelScope.launch {
-            val loanDto= CreateLoanDto(
-                amount = amount.toDouble(),
+            val loanDto = RefinanceDto(
+                amount = if(amount!="") amount.toDouble() else 0.0,
                 interest = interest.toDouble(),
                 numberDate = numberDate.toInt(),
-                borrowerClientId = borrowersViewModel.selectedBorrower!!.id,
                 loanType = when (selectedTypeLoan) {
                     "Diario" -> {
                         LoanType.Daily
                     }
+
                     "Semanal" -> {
                         LoanType.Weekly
                     }
+
                     else -> {
                         LoanType.Monthly
                     }
-                }
+                },
+                loanId = borrowersViewModel.selectedLoan!!.id
             )
-            var response=loanApi.apiLoanPost(
+            val response = loanApi.apiLoanRefinancePost(
                 loanDto
             )
-            if(response.code()==200){
+            if (response.code() == 200) {
                 borrowersViewModel.updateBorrowers()
             }
 

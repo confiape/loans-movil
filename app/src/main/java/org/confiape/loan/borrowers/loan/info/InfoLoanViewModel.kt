@@ -22,8 +22,6 @@ import javax.inject.Inject
 class InfoLoanViewModel @Inject constructor(
     private val paymentApi: PaymentApi,
 ) : ViewModel() {
-
-
     var amountToPAy by mutableStateOf("")
     var isDisablePayButton by mutableStateOf(false)
 

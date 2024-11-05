@@ -9,29 +9,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.filled.BookmarkBorder
-import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,44 +39,42 @@ import androidx.compose.ui.unit.dp
 import org.confiape.loan.borrowers.BorrowersViewModel
 
 
-
-
-
-
 @Composable
 fun AddLoanScreen(
- loanViewModel: AddLoanViewModel,
+    addLoanViewModel: AddLoanViewModel,
     borrowersViewModel: BorrowersViewModel,
 ) {
     if (borrowersViewModel.showLoanScreen) {
         AlertDialog(onDismissRequest = { },
-            title = { Text(text = "Nuevo Prestamo para \"${loanViewModel.borrower.name}\"") },
+            title = { Text(text = "Nuevo Prestamo para \"${borrowersViewModel.selectedBorrower!!.name}\"") },
             text = {
                 Column {
                     OutlinedTextField(
-                        value = loanViewModel.amount,
-                        onValueChange = { loanViewModel.onChangeAmount(it) },
+                        value = addLoanViewModel.amount,
+                        onValueChange = { addLoanViewModel.onChangeAmount(it) },
                         label = { Text(text = "Monto") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                     OutlinedTextField(
-                        value = loanViewModel.interest,
-                        onValueChange = { loanViewModel.onChangeInterest(it) },
+                        value = addLoanViewModel.interest,
+                        onValueChange = { addLoanViewModel.onChangeInterest(it) },
                         label = { Text(text = "Interes") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                     OutlinedTextField(
-                        value = loanViewModel.numberDate,
-                        onValueChange = { loanViewModel.onChangeNumberDate(it) },
+                        value = addLoanViewModel.numberDate,
+                        onValueChange = { addLoanViewModel.onChangeNumberDate(it) },
                         label = { Text(text = "Numero de dias") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
-                    SelectTypeOfLoan(loanViewModel)
+                    SelectTypeOfLoan(
+                        addLoanViewModel.selectedTypeLoan, addLoanViewModel::onOptionSelected
+                    )
                 }
             },
             confirmButton = {
                 Button(onClick = {
-                    loanViewModel.insert(borrowersViewModel)
+                    addLoanViewModel.insert(borrowersViewModel)
                     borrowersViewModel.activateAddLoanScreen(false)
                 }) {
                     Text("Crear")
@@ -133,25 +123,24 @@ fun DropdownMenuSample() {
 
 
 @Composable
-fun SelectTypeOfLoan(loanViewModel: AddLoanViewModel) {
+fun SelectTypeOfLoan(selectedTypeLoan: String, onOptionSelect: (String) -> Unit) {
     val radioOptions = listOf("Diario", "Semanal", "Mensual")
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
 
     Column(Modifier.selectableGroup()) {
         radioOptions.forEach { text ->
             Row(
-                Modifier.fillMaxWidth()
+                Modifier
+                    .fillMaxWidth()
                     .height(56.dp)
                     .selectable(
-                        selected = (text == loanViewModel.selectedTypeLoan),
-                        onClick = { loanViewModel.onOptionSelected(text) },
+                        selected = (text == selectedTypeLoan),
+                        onClick = { onOptionSelect(text) },
                         role = Role.RadioButton
                     )
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
-                    selected = (text == loanViewModel.selectedTypeLoan),
+                    selected = (text == selectedTypeLoan),
                     onClick = null // null recommended for accessibility with screenreaders
                 )
                 Text(
@@ -170,12 +159,7 @@ fun DaySelection() {
         listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo")
     val selectedDays = remember {
         mutableStateListOf(
-            "Lunes",
-            "Martes",
-            "Miércoles",
-            "Jueves",
-            "Viernes",
-            "Sábado"
+            "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"
         )
     }
 
@@ -191,16 +175,13 @@ fun DaySelection() {
                     .padding(vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Checkbox(
-                    checked = selectedDays.contains(day),
-                    onCheckedChange = { isChecked ->
-                        if (isChecked) {
-                            selectedDays.add(day)
-                        } else {
-                            selectedDays.remove(day)
-                        }
+                Checkbox(checked = selectedDays.contains(day), onCheckedChange = { isChecked ->
+                    if (isChecked) {
+                        selectedDays.add(day)
+                    } else {
+                        selectedDays.remove(day)
                     }
-                )
+                })
                 Text(text = day)
             }
         }

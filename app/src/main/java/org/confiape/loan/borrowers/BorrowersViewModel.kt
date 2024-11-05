@@ -33,9 +33,12 @@ class BorrowersViewModel @Inject constructor(
     var selectedLoan by mutableStateOf<SimpleLoanDtoAndPayments?>(null)
         private set
 
+
     var selectedBorrower by mutableStateOf<BasicBorrowerClientWithTagsAndLoans?>(null)
         private set
 
+    var showRefinanceScreen by mutableStateOf(false)
+        private set
 
     var showAddBorrowerScreen by mutableStateOf(false)
         private set
@@ -93,6 +96,9 @@ class BorrowersViewModel @Inject constructor(
         showLoanScreen = isActivate
     }
 
+    fun activateShowRefinanceScreen(isActivate: Boolean) {
+        showRefinanceScreen = isActivate
+    }
 
     fun selectLoan(item: SimpleLoanDtoAndPayments?) {
         selectedLoan = item
@@ -114,7 +120,7 @@ class BorrowersViewModel @Inject constructor(
         } else {
             allBorrowers.filter { borrower ->
 
-                borrower.name!!.contains(searchText, ignoreCase = true)
+                (borrower.name+borrower.title+borrower.dni).contains(searchText, ignoreCase = true)
             }
         }
     }

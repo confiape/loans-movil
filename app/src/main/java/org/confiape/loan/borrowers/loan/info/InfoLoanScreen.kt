@@ -13,6 +13,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,11 +27,14 @@ import org.confiape.loan.borrowers.BorrowersViewModel
 import org.confiape.loan.models.SimpleLoanDtoAndPayments
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.math.ceil
 
 @Composable
 fun InfoLoanScreen(borrowerViewModel: BorrowersViewModel, infoLoanViewModel: InfoLoanViewModel) {
 
-    if (borrowerViewModel.selectedLoan != null) {
+    if (borrowerViewModel.selectedLoan != null &&
+        borrowerViewModel.selectedBorrower != null &&
+        !borrowerViewModel.showRefinanceScreen) {
         var checked by remember { mutableStateOf(false) }
 
 
@@ -55,15 +59,22 @@ fun InfoLoanScreen(borrowerViewModel: BorrowersViewModel, infoLoanViewModel: Inf
                     Text(modifier = Modifier.weight(1f), text = "Total:")
                     Text(
                         modifier = Modifier.weight(1f),
-                        text = "S./ ${borrowerViewModel.selectedLoan!!.totalAmount!!}"
+                        text = "S./ ${ceil(borrowerViewModel.selectedLoan!!.totalAmount!!)}"
                     )
                 }
                 Row {
                     Text(modifier = Modifier.weight(1f), text = "Falta Pagar:")
                     Text(
                         modifier = Modifier.weight(1f),
-                        text = "S./ ${borrowerViewModel.selectedLoan!!.totalAmount!! - borrowerViewModel.selectedLoan!!.totalPayment!!}"
+                        text = "S./ ${ceil(borrowerViewModel.selectedLoan!!.totalAmount!!) - borrowerViewModel.selectedLoan!!.totalPayment!!}"
                     )
+
+                }
+                TextButton(modifier = Modifier.fillMaxWidth(), onClick = {
+                    borrowerViewModel.activateShowRefinanceScreen(true)
+
+                }) {
+                    Text("Refinanciar")
                 }
                 Row {
                     Text(modifier = Modifier.weight(1f), text = "Interes:")
@@ -82,17 +93,12 @@ fun InfoLoanScreen(borrowerViewModel: BorrowersViewModel, infoLoanViewModel: Inf
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         onValueChange = { infoLoanViewModel.OnChangeAmountToPay(it) })
                     Column(
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
+                        modifier = Modifier.align(Alignment.CenterVertically)
                     ) {
                         Text(
-                            "Yape",
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                            "Yape", modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
-                        Checkbox(
-                            checked = checked,
-                            onCheckedChange = { checked = it }
-                        )
+                        Checkbox(checked = checked, onCheckedChange = { checked = it })
                     }
                     Button(modifier = Modifier
                         .weight(1f)
@@ -111,9 +117,7 @@ fun InfoLoanScreen(borrowerViewModel: BorrowersViewModel, infoLoanViewModel: Inf
                                 )
                             } else {
                                 infoLoanViewModel.editPay(
-                                    pay.id,
-                                    borrowerViewModel,
-                                    checked
+                                    pay.id, borrowerViewModel, checked
                                 )
                             }
 

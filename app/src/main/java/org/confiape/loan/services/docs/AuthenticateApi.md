@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost*
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
 | [**apiAuthenticateAssignRoleToUserIdPost**](AuthenticateApi.md#apiAuthenticateAssignRoleToUserIdPost) | **POST** api/Authenticate/AssignRoleToUser/{id} |  |
+| [**apiAuthenticateGetAllUsersPost**](AuthenticateApi.md#apiAuthenticateGetAllUsersPost) | **POST** api/Authenticate/GetAllUsers |  |
 | [**apiAuthenticateGetAuthorizationTokenPost**](AuthenticateApi.md#apiAuthenticateGetAuthorizationTokenPost) | **POST** api/Authenticate/GetAuthorizationToken |  |
 | [**apiAuthenticateLogInPost**](AuthenticateApi.md#apiAuthenticateLogInPost) | **POST** api/Authenticate/LogIn |  |
 | [**apiAuthenticateLogOutGet**](AuthenticateApi.md#apiAuthenticateLogOutGet) | **GET** api/Authenticate/LogOut |  |
@@ -53,6 +54,43 @@ Configure Bearer:
 
  - **Content-Type**: application/json, text/json, application/*+json
  - **Accept**: Not defined
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.confiape.loan.*
+//import org.confiape.loan.infrastructure.*
+//import org.confiape.loan.models.*
+
+val apiClient = ApiClient()
+apiClient.setBearerToken("TOKEN")
+val webService = apiClient.createWebservice(AuthenticateApi::class.java)
+
+launch(Dispatchers.IO) {
+    val result : kotlin.collections.List<UserDto> = webService.apiAuthenticateGetAllUsersPost()
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**kotlin.collections.List&lt;UserDto&gt;**](UserDto.md)
+
+### Authorization
+
+
+Configure Bearer:
+    ApiClient().setBearerToken("TOKEN")
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain, application/json, text/json
 
 
 

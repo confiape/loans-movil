@@ -1,5 +1,7 @@
 package org.confiape.loan.borrowers.updateBorrower
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,6 +15,8 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,8 +35,20 @@ fun UpdateBorrowerScreen(
             id = borrowersViewModel.selectedBorrower?.id!!,
             borrowersViewModel.selectedBorrower?.tags ?: listOf(),
             borrowersViewModel.selectedBorrower?.name ?: "",
-            borrowersViewModel.selectedBorrower?.dni ?: ""
+            borrowersViewModel.selectedBorrower?.dni ?: "",
+            borrowersViewModel.selectedBorrower?.title ?: ""
         )
+
+        val selectedFile = remember { mutableStateOf<Uri?>(null) }
+        val filePickerLauncher =
+            rememberLauncherForActivityResult(contract = androidx.activity.result.contract.ActivityResultContracts.OpenDocument(),
+                onResult = { uri ->
+                    if (uri != null) {
+                        selectedFile.value = uri
+                        viewModel.uploadFile(uri)
+
+                    }
+                })
         AlertDialog(onDismissRequest = { }, title = { Text(text = "Actualizar Cliente") }, text = {
             Column {
                 MultiChoiceSegmentedButtonRow(
@@ -61,12 +77,24 @@ fun UpdateBorrowerScreen(
                     singleLine = true,
                     label = { Text(text = "Nombre") },
                 )
+                OutlinedTextField(
+                    value = viewModel.alias,
+                    onValueChange = { viewModel.onChangeAlias(it) },
+                    maxLines = 1,
+                    singleLine = true,
+                    label = { Text(text = "Alias") },
+                )
                 OutlinedTextField(value = viewModel.dni,
                     maxLines = 1,
                     singleLine = true,
                     onValueChange = { viewModel.onChangeDni(it) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     label = { Text(text = "DNI") })
+//                Button(onClick = {
+//                    filePickerLauncher.launch(arrayOf("*/*"))
+//                }, modifier = Modifier.fillMaxWidth()) {
+//                    Text(text = selectedFile.value?.lastPathSegment ?: "Seleccionar archivo")
+//                }
 
             }
         }, confirmButton = {

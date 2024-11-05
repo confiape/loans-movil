@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName
 import org.confiape.loan.models.BasicLoanDtoPaginationResponse
 import org.confiape.loan.models.CompleteLoanDto
 import org.confiape.loan.models.CreateLoanDto
+import org.confiape.loan.models.RefinanceDto
 
 interface LoanApi {
     /**
@@ -78,5 +79,17 @@ interface LoanApi {
      */
     @POST("api/Loan")
     suspend fun apiLoanPost(@Body createLoanDto: CreateLoanDto? = null): Response<Unit>
+
+    /**
+     * 
+     * 
+     * Responses:
+     *  - 200: Success
+     *
+     * @param refinanceDto  (optional)
+     * @return [Unit]
+     */
+    @POST("api/Loan/Refinance")
+    suspend fun apiLoanRefinancePost(@Body refinanceDto: RefinanceDto? = null): Response<Unit>
 
 }

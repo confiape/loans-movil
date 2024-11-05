@@ -44,6 +44,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import org.confiape.loan.core.SharedService
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.OffsetDateTime
@@ -64,7 +65,6 @@ fun ReportsScreen(reportsViewModel: ReportsViewModel) {
         }
     } else {
         Column {
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -72,6 +72,7 @@ fun ReportsScreen(reportsViewModel: ReportsViewModel) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+//                Text(SharedService.getUserName(context))
                 Button(
                     onClick = { printReport(context, reportsViewModel) },
                     modifier = Modifier
@@ -109,6 +110,27 @@ fun ReportsScreen(reportsViewModel: ReportsViewModel) {
                     }
                 }
             }
+            MultiChoiceSegmentedButtonRow(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            ) {
+                reportsViewModel.users.forEachIndexed { index, label ->
+                    SegmentedButton(
+                        shape = SegmentedButtonDefaults.itemShape(
+                            index = index, count = reportsViewModel.users.size
+                        ),
+                        onCheckedChange = {
+                            label.id?.let { it1 -> reportsViewModel.onSelectUser(it1) }
+                        },
+                        checked = reportsViewModel.isSelectedUser(label.id),
+                    ) {
+                        Text(
+                            text = label.name!!.first().uppercaseChar().toString()+label.name.substring(1,3),
+                            modifier = Modifier.fillMaxWidth(),
+                            maxLines = 1
+                        )
+                    }
+                }
+            }
 
             LazyColumn(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
@@ -117,7 +139,7 @@ fun ReportsScreen(reportsViewModel: ReportsViewModel) {
                 items(items = reportsViewModel.filteredPaymentsByDayDto, itemContent = {
                     Row(Modifier.fillMaxWidth()) {
                         Text(
-                            text = it.name ?: "d",
+                            text = it.title ?: "",
                             modifier = Modifier.weight(0.7f),
                             color = if (it.isYape == true) Color(0xFF5f0772) else Color.Unspecified
                         )

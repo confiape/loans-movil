@@ -62,6 +62,8 @@ import org.confiape.loan.borrowers.loan.add.AddLoanScreen
 import org.confiape.loan.borrowers.loan.add.AddLoanViewModel
 import org.confiape.loan.borrowers.loan.info.InfoLoanScreen
 import org.confiape.loan.borrowers.loan.info.InfoLoanViewModel
+import org.confiape.loan.borrowers.loan.refinance.RefinanceScreen
+import org.confiape.loan.borrowers.loan.refinance.RefinanceViewModel
 import org.confiape.loan.borrowers.reports.ReportsScreen
 import org.confiape.loan.borrowers.reports.ReportsViewModel
 import org.confiape.loan.borrowers.updateBorrower.UpdateBorrowerScreen
@@ -70,6 +72,7 @@ import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import kotlin.math.ceil
 
 
 @Composable
@@ -78,6 +81,7 @@ fun BorrowerScreen(
     addLoanViewModel: AddLoanViewModel,
     infoLoanViewModel: InfoLoanViewModel,
     reportsViewModel: ReportsViewModel,
+    refinanceViewModel: RefinanceViewModel
 ) {
     val navigationController = rememberNavController()
     val currentBackStackEntry by navigationController.currentBackStackEntryAsState()
@@ -95,7 +99,7 @@ fun BorrowerScreen(
             startDestination = Routes.Loans.route
         ) {
             composable(Routes.Loans.route) {
-                Content(borrowerViewModel, addLoanViewModel, infoLoanViewModel)
+                Content(borrowerViewModel, addLoanViewModel, infoLoanViewModel,refinanceViewModel)
             }
             composable(Routes.Reports.route) {
                 LaunchedEffect(Unit) { reportsViewModel.update() }
@@ -110,10 +114,12 @@ fun BorrowerScreen(
 fun AddDialogs(
     borrowerViewModel: BorrowersViewModel,
     addLoanViewModel: AddLoanViewModel,
-    infoLoanViewModel: InfoLoanViewModel
+    infoLoanViewModel: InfoLoanViewModel,
+    refinanceViewModel: RefinanceViewModel
 ) {
     AddBorrowerScreen(borrowersViewModel = borrowerViewModel)
-    AddLoanScreen(loanViewModel = addLoanViewModel, borrowersViewModel = borrowerViewModel)
+    AddLoanScreen(addLoanViewModel = addLoanViewModel, borrowersViewModel = borrowerViewModel)
+    RefinanceScreen(refinanceViewModel = refinanceViewModel, borrowerViewModel = borrowerViewModel)
     InfoLoanScreen(borrowerViewModel, infoLoanViewModel)
     UpdateBorrowerScreen(borrowerViewModel)
 }
@@ -123,9 +129,10 @@ fun AddDialogs(
 fun Content(
     borrowerViewModel: BorrowersViewModel,
     addLoanViewModel: AddLoanViewModel,
-    infoLoanViewModel: InfoLoanViewModel
+    infoLoanViewModel: InfoLoanViewModel,
+    refinanceViewModel: RefinanceViewModel
 ) {
-    AddDialogs(borrowerViewModel, addLoanViewModel, infoLoanViewModel)
+    AddDialogs(borrowerViewModel, addLoanViewModel, infoLoanViewModel,refinanceViewModel)
     Column(
         modifier = Modifier
 
@@ -254,7 +261,7 @@ fun BorrowerListItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = borrower.name ?: "",
+                text = borrower.title ?: "",
                 modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold
@@ -288,7 +295,7 @@ fun BorrowerListItem(
                 modifier = Modifier.weight(1f)
             ) {
                 items(items = borrower.loans!!, itemContent = {
-                    val amount = it.amount!!.plus(it.amount * it.interest!! / 100)
+                    val amount = ceil(it.amount!!.plus(it.amount * it.interest!! / 100))
                     val isPaidToday = it.payments?.any { payment ->
                         payment.dateTime?.toLocalDate() == OffsetDateTime.now(ZoneId.systemDefault()).toLocalDate()
                     } == true
@@ -319,7 +326,7 @@ fun BorrowerListItem(
             }
 
             OutlinedButton(modifier = Modifier.padding(start = 8.dp), onClick = {
-                addLoanViewModel.borrower = borrower
+                borrowerViewModel.selectBorrower(borrower)
                 borrowerViewModel.activateAddLoanScreen(true)
             }) {
                 Text(text = "+")

@@ -23,6 +23,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import org.confiape.loan.apis.AuthenticateApi
 import org.confiape.loan.apis.BorrowerApi
+import org.confiape.loan.apis.FileApi
 import org.confiape.loan.apis.LoanApi
 import org.confiape.loan.apis.PaymentApi
 import org.confiape.loan.apis.ReportsApi
@@ -65,6 +66,11 @@ object NetworkModule {
     @Singleton
     fun provideLoanApi(apiClient: ApiClient): LoanApi {
         return apiClient.createService(LoanApi::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideFileApi(apiClient: ApiClient): FileApi {
+        return apiClient.createService(FileApi::class.java)
     }
 
     @Provides
@@ -155,6 +161,7 @@ class AuthorizationInterceptor(private val context: Context) : Interceptor {
                 SharedService.saveToken(
                     context, AppConstants.AuthorizationToken, newToken.body()!!.accessToken ?: ""
                 )
+                SharedService.saveUser(context,newToken.body()!!.user!!)
                 originalResponse.close()
 
                 val res = chain.proceed(
