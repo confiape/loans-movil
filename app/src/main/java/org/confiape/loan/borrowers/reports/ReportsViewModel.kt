@@ -23,8 +23,11 @@ import javax.inject.Inject
 class ReportsViewModel @Inject constructor(
     private val reportsApi: ReportsApi,
     private val tagRepository: TagRepository,
-    private val authenticateApi: AuthenticateApi
+    private val authenticateApi: AuthenticateApi,
 ) : ViewModel() {
+
+
+    var currentSortOrder by mutableStateOf(SortOrder.BY_NAME)
 
     var paymentByDayDto by mutableStateOf(ReportPaymentByDayDto())
         private set
@@ -54,6 +57,29 @@ class ReportsViewModel @Inject constructor(
             tags = tagRepository.getTags()
             users = authenticateApi.apiAuthenticateGetAllUsersPost().body()!!
                 .filter { it.id != UUID.fromString("6D7EBE1A-607A-4819-0DAA-08DCCB4FB94D") }
+        }
+    }
+
+    fun toggleSortOrder() {
+        currentSortOrder = if (currentSortOrder == SortOrder.BY_NAME) {
+            SortOrder.BY_DATE
+        } else {
+            if (currentSortOrder == SortOrder.BY_DATE) {
+                SortOrder.BY_AMOUNT
+            } else {
+                SortOrder.BY_NAME
+            }
+        }
+
+        filteredPaymentsByDayDto = if (currentSortOrder == SortOrder.BY_NAME) {
+            filteredPaymentsByDayDto.sortedBy { it.title }
+        } else {
+            if (currentSortOrder == SortOrder.BY_DATE) {
+                filteredPaymentsByDayDto.sortedByDescending { it.loanDate }
+            } else {
+                filteredPaymentsByDayDto.sortedByDescending { it.payment }
+            }
+
         }
     }
 
@@ -140,4 +166,10 @@ class ReportsViewModel @Inject constructor(
     fun isSelectedUser(id: UUID?): Boolean {
         return id in selectedUsers
     }
+}
+
+enum class SortOrder(val label: String) {
+    BY_NAME("Nombre"),
+    BY_AMOUNT("Monto"),
+    BY_DATE("Fecha")
 }

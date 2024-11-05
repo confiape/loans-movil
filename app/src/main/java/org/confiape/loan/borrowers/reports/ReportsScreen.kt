@@ -16,7 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Print
+import androidx.compose.material.icons.filled.SortByAlpha
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
@@ -44,7 +47,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import org.confiape.loan.core.SharedService
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.OffsetDateTime
@@ -81,6 +83,7 @@ fun ReportsScreen(reportsViewModel: ReportsViewModel) {
                 ) {
                     Text(text = "Imprimir Reporte")
                 }
+
                 DatePickerDocked(
                     defaultDate = reportsViewModel.currentOffsetDateTime ?: OffsetDateTime.now(),
                     onChangeDate = {
@@ -124,11 +127,35 @@ fun ReportsScreen(reportsViewModel: ReportsViewModel) {
                         checked = reportsViewModel.isSelectedUser(label.id),
                     ) {
                         Text(
-                            text = label.name!!.first().uppercaseChar().toString()+label.name.substring(1,3),
+                            text = label.name!!.first().uppercaseChar()
+                                .toString() + label.name.substring(1, 3),
                             modifier = Modifier.fillMaxWidth(),
                             maxLines = 1
                         )
                     }
+                }
+                IconButton(
+                    onClick = { reportsViewModel.toggleSortOrder() },
+                    modifier = Modifier.padding(start = 16.dp)
+                ) {
+                    Icon(
+                        imageVector = if (reportsViewModel.currentSortOrder == SortOrder.BY_DATE) Icons.Default.DateRange
+                        else if (reportsViewModel.currentSortOrder == SortOrder.BY_NAME) Icons.Default.SortByAlpha
+                        else Icons.Default.AttachMoney,
+                        contentDescription = "Ordenar lista",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+
+                }
+                IconButton(
+                    onClick = { printReportFromList(context,reportsViewModel.filteredPaymentsByDayDto) },
+                    modifier = Modifier.padding(start = 16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Print,
+                        contentDescription = "Ordenar lista",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
 
@@ -192,7 +219,7 @@ fun ReportsScreen(reportsViewModel: ReportsViewModel) {
 fun DatePickerDocked(
     onChangeDate: (OffsetDateTime) -> Unit,
     defaultDate: OffsetDateTime = OffsetDateTime.now(),
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
 ) {
     val defaultMillis = defaultDate.toInstant().toEpochMilli()
     var showDatePicker by remember { mutableStateOf(false) }
