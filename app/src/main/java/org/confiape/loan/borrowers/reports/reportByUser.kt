@@ -12,6 +12,7 @@ import android.print.PrintDocumentAdapter
 import android.print.PrintDocumentInfo
 import android.print.PrintManager
 import org.confiape.loan.models.ReportPaymentsDto
+import org.confiape.loan.models.TagDto
 import java.io.FileOutputStream
 
 
@@ -152,7 +153,7 @@ fun printReport(context: Context, reportsViewModel: ReportsViewModel) {
             .setDuplexMode(PrintAttributes.DUPLEX_MODE_LONG_EDGE).build()
     )
 }
-fun printReportFromList(context: Context, reportPaymentsList: List<ReportPaymentsDto>) {
+fun printReportFromList(context: Context, reportPaymentsList: List<ReportPaymentsDto>, tagList: List<TagDto>) {
     val printManager = context.getSystemService(Context.PRINT_SERVICE) as PrintManager
     val printAdapter = object : PrintDocumentAdapter() {
         override fun onStart() {}
@@ -197,46 +198,61 @@ fun printReportFromList(context: Context, reportPaymentsList: List<ReportPayment
                 canvas.drawText("Reporte de Pagos - Lista Completa", 80f, 50f, paint)
                 paint.isFakeBoldText = false
 
-                // Table Headers
+                // Agrupar por tagId
+                val groupedPayments = reportPaymentsList.groupBy { it.tagId }
+
                 var currentY = 100f
-                paint.isFakeBoldText = true
-                canvas.drawText("Nombre", 80f, currentY, paint)
-                canvas.drawText("Fecha", 300f, currentY, paint)
-                canvas.drawText("Monto Prestado", 400f, currentY, paint)
-                canvas.drawText("Monto Pagado", 500f, currentY, paint)
-                paint.isFakeBoldText = false
+                var grandTotalPayment = 0.0
+                groupedPayments.forEach { (tagId, payments) ->
+                    // Obtener el nombre del tag
+                    val tagName = tagList.find { it.id == tagId }?.title ?: "Sin Tag"
 
-                // Table Content
-                currentY += 15f
-                var totalPayment = 0.0
-                reportPaymentsList.forEach {
-                    if (currentY > 750f) { // Check if we need a new page
-                        pdfDocument.finishPage(page)
-                        pageInfo = PdfDocument.PageInfo.Builder(595, 842, pdfDocument.pages.size + 1).create()
-                        page = pdfDocument.startPage(pageInfo)
-                        canvas = page.canvas
-                        currentY = 50f
+                    // Dibujar la línea de separación con el nombre del tag
+                    paint.isFakeBoldText = true
+                    canvas.drawLine(80f, currentY, 500f, currentY, paint)
+                    canvas.drawText(tagName, 250f, currentY - 5f, paint)
+                    paint.isFakeBoldText = false
+                    currentY += 20f
 
-                        // Reimprimir encabezado de tabla
-                        paint.isFakeBoldText = true
-                        canvas.drawText("Nombre", 80f, currentY, paint)
-                        canvas.drawText("Fecha", 300f, currentY, paint)
-                        canvas.drawText("Monto Prestado", 400f, currentY, paint)
-                        canvas.drawText("Monto Pagado", 500f, currentY, paint)
-                        paint.isFakeBoldText = false
+                    // Table Headers
+                    paint.isFakeBoldText = true
+                    canvas.drawText("Nombre", 80f, currentY, paint)
+                    canvas.drawText("Fecha", 300f, currentY, paint)
+                    canvas.drawText("Monto Prestado", 400f, currentY, paint)
+                    canvas.drawText("Monto Pagado", 500f, currentY, paint)
+                    paint.isFakeBoldText = false
+                    currentY += 15f
+
+                    // Table Content
+                    payments.forEach {
+                        if (currentY > 750f) { // Check if we need a new page
+                            pdfDocument.finishPage(page)
+                            pageInfo = PdfDocument.PageInfo.Builder(595, 842, pdfDocument.pages.size + 1).create()
+                            page = pdfDocument.startPage(pageInfo)
+                            canvas = page.canvas
+                            currentY = 50f
+
+                            // Reimprimir encabezado de tabla
+                            paint.isFakeBoldText = true
+                            canvas.drawText("Nombre", 80f, currentY, paint)
+                            canvas.drawText("Fecha", 300f, currentY, paint)
+                            canvas.drawText("Monto Prestado", 400f, currentY, paint)
+                            canvas.drawText("Monto Pagado", 500f, currentY, paint)
+                            paint.isFakeBoldText = false
+                            currentY += 15f
+                        }
+
+                        // Datos de cada pago
+                        canvas.drawText(it.name ?: "N/A", 80f, currentY, paint)
+                        canvas.drawText(it.loanDate?.toLocalDate().toString(), 300f, currentY, paint)
+                        canvas.drawText(String.format("%,.2f", it.amount ?: 0.0), 400f, currentY, paint)
+                        canvas.drawText(String.format("%,.2f", it.payment), 500f, currentY, paint)
+                        grandTotalPayment += it.payment ?: 0.0
                         currentY += 15f
                     }
-
-                    // Datos de cada pago
-                    canvas.drawText(it.name ?: "N/A", 80f, currentY, paint)
-                    canvas.drawText(it.loanDate?.toLocalDate().toString(), 300f, currentY, paint)
-                    canvas.drawText(String.format("%,.2f", it.amount ?: 0.0), 400f, currentY, paint)
-                    canvas.drawText(String.format("%,.2f", it.payment), 500f, currentY, paint)
-                    totalPayment += it.payment?:0.0
-                    currentY += 15f
                 }
 
-                // Total Summary
+                // Grand Total Summary
                 if (currentY > 750f) {
                     pdfDocument.finishPage(page)
                     pageInfo = PdfDocument.PageInfo.Builder(595, 842, pdfDocument.pages.size + 1).create()
@@ -246,17 +262,10 @@ fun printReportFromList(context: Context, reportPaymentsList: List<ReportPayment
                 }
                 currentY += 15f
                 paint.isFakeBoldText = true
-                canvas.drawText("Total Monto Pagado: S./ ${String.format("%,.2f", totalPayment)}", 80f, currentY, paint)
+                canvas.drawText("Total Monto Pagado: S./ ${String.format("%,.2f", grandTotalPayment)}", 80f, currentY, paint)
                 paint.isFakeBoldText = false
 
                 pdfDocument.finishPage(page)
-
-                // Agregar página en blanco si el número de páginas es impar
-//                if (pdfDocument.pages.size % 2 != 0) {
-//                    val blankPageInfo = PdfDocument.PageInfo.Builder(595, 842, pdfDocument.pages.size + 1).create()
-//                    val blankPage = pdfDocument.startPage(blankPageInfo)
-//                    pdfDocument.finishPage(blankPage)
-//                }
             }
 
             try {
@@ -281,3 +290,4 @@ fun printReportFromList(context: Context, reportPaymentsList: List<ReportPayment
             .setDuplexMode(PrintAttributes.DUPLEX_MODE_LONG_EDGE).build()
     )
 }
+

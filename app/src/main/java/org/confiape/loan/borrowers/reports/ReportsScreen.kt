@@ -148,7 +148,7 @@ fun ReportsScreen(reportsViewModel: ReportsViewModel) {
 
                 }
                 IconButton(
-                    onClick = { printReportFromList(context,reportsViewModel.filteredPaymentsByDayDto) },
+                    onClick = { printReportFromList(context,reportsViewModel.filteredPaymentsByDayDto,reportsViewModel.tags) },
                     modifier = Modifier.padding(start = 16.dp)
                 ) {
                     Icon(
