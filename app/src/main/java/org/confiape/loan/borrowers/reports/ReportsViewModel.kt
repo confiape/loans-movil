@@ -27,7 +27,7 @@ class ReportsViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    var currentSortOrder by mutableStateOf(SortOrder.BY_NAME)
+    var currentSortOrder by mutableStateOf(SortOrder.BY_DATE)
 
     var paymentByDayDto by mutableStateOf(ReportPaymentByDayDto())
         private set

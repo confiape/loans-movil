@@ -217,9 +217,7 @@ fun printReportFromList(context: Context, reportPaymentsList: List<ReportPayment
                     // Table Headers
                     paint.isFakeBoldText = true
                     canvas.drawText("Nombre", 80f, currentY, paint)
-                    canvas.drawText("Fecha", 300f, currentY, paint)
-                    canvas.drawText("Monto Prestado", 400f, currentY, paint)
-                    canvas.drawText("Monto Pagado", 500f, currentY, paint)
+                    canvas.drawText("Monto Pagado", 300f, currentY, paint)
                     paint.isFakeBoldText = false
                     currentY += 15f
 
@@ -235,18 +233,14 @@ fun printReportFromList(context: Context, reportPaymentsList: List<ReportPayment
                             // Reimprimir encabezado de tabla
                             paint.isFakeBoldText = true
                             canvas.drawText("Nombre", 80f, currentY, paint)
-                            canvas.drawText("Fecha", 300f, currentY, paint)
-                            canvas.drawText("Monto Prestado", 400f, currentY, paint)
-                            canvas.drawText("Monto Pagado", 500f, currentY, paint)
+                            canvas.drawText("Monto Pagado", 300f, currentY, paint)
                             paint.isFakeBoldText = false
                             currentY += 15f
                         }
 
                         // Datos de cada pago
-                        canvas.drawText(it.name ?: "N/A", 80f, currentY, paint)
-                        canvas.drawText(it.loanDate?.toLocalDate().toString(), 300f, currentY, paint)
-                        canvas.drawText(String.format("%,.2f", it.amount ?: 0.0), 400f, currentY, paint)
-                        canvas.drawText(String.format("%,.2f", it.payment), 500f, currentY, paint)
+                        canvas.drawText(it.title ?: "N/A", 80f, currentY, paint)
+                        canvas.drawText(String.format("%,.2f", it.payment), 300f, currentY, paint)
                         grandTotalPayment += it.payment ?: 0.0
                         currentY += 15f
                     }
@@ -290,4 +284,5 @@ fun printReportFromList(context: Context, reportPaymentsList: List<ReportPayment
             .setDuplexMode(PrintAttributes.DUPLEX_MODE_LONG_EDGE).build()
     )
 }
+
 
