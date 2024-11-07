@@ -35,6 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import java.util.TimeZone
 import javax.inject.Singleton
 
 @Module
@@ -48,6 +49,7 @@ object NetworkModule {
 
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(AuthorizationInterceptor(context))
+            .addInterceptor(TimezoneInterceptor())
 
         val response = ApiClient(
             baseUrl = AppConstants.BaseUrl, okHttpClient
@@ -95,7 +97,16 @@ object NetworkModule {
         return apiClient.createService(ReportsApi::class.java)
     }
 }
-
+class TimezoneInterceptor : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val timezone = TimeZone.getDefault().id
+        val request = chain.request()
+            .newBuilder()
+            .addHeader("X-Timezone", timezone)
+            .build()
+        return chain.proceed(request)
+    }
+}
 
 class AuthorizationInterceptor(private val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -104,20 +115,10 @@ class AuthorizationInterceptor(private val context: Context) : Interceptor {
             "Authorization",
             "Bearer " + SharedService.getToken(AppConstants.AuthorizationToken, context)
         ).build()
-        Log.i(
-            AppConstants.Tag, "Start Interceptor with token ${
-                SharedService.getToken(
-                    AppConstants.AuthorizationToken, context
-                )
-            }"
-        )
+
         val originalResponse = chain.proceed(request)
 
 
-        Log.i(
-            AppConstants.Tag,
-            "First request with uri ${originalResponse.request.url} status ${originalResponse.code} "
-        )
         if ((chain.request().url.toString()
                 .contains("/api/Authenticate/LoginWithGoogleToken") || chain.request().url.toString()
                 .contains("/api/Authenticate/LoginWithAuthenticationToken")) && originalResponse.headers(
@@ -141,9 +142,7 @@ class AuthorizationInterceptor(private val context: Context) : Interceptor {
 
 
         if (originalResponse.code == 401) {
-            Log.i(
-                AppConstants.Tag, "Is code 401"
-            )
+
             val service = ApiClient(AppConstants.BaseUrl,
                 OkHttpClient.Builder().addInterceptor { internalChain ->
                     internalChain.proceed(
