@@ -9,6 +9,7 @@
 | **title** | **kotlin.String** |  |  [optional] |
 | **amount** | **kotlin.Double** |  |  [optional] |
 | **interest** | **kotlin.Double** |  |  [optional] |
+| **tag** | **kotlin.String** |  |  [optional] |
 | **dateTime** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 
 

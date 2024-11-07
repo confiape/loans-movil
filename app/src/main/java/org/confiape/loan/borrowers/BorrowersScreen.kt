@@ -69,7 +69,7 @@ import org.confiape.loan.borrowers.loan.refinance.RefinanceScreen
 import org.confiape.loan.borrowers.loan.refinance.RefinanceViewModel
 import org.confiape.loan.borrowers.reports.ReportsScreen
 import org.confiape.loan.borrowers.reports.ReportsViewModel
-import org.confiape.loan.borrowers.sorReports.SortLoans
+import org.confiape.loan.borrowers.sortLoans.SortLoans
 import org.confiape.loan.borrowers.updateBorrower.UpdateBorrowerScreen
 import org.confiape.loan.core.Routes
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans

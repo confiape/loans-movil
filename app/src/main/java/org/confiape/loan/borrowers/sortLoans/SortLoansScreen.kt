@@ -1,4 +1,4 @@
-package org.confiape.loan.borrowers.sorReports
+package org.confiape.loan.borrowers.sortLoans
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -7,46 +7,72 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MultiChoiceSegmentedButtonRow
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import org.confiape.loan.models.LoanAndDate
-import java.time.LocalDate
-import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
-import java.util.UUID
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SortLoans(sortLoansViewModel: SorLoansViewModels= hiltViewModel()) {
-    if(sortLoansViewModel.loanAndDates.isNotEmpty())
-    GroupedLoansScreen(
-        sortLoansViewModel.loanAndDates
-    )
+fun SortLoans(
+    sortLoansViewModel: SorLoansViewModels = hiltViewModel(),
+) {
+    if (sortLoansViewModel.filterGroupedLoans.isNotEmpty())
+
+
+        Column {
+            MultiChoiceSegmentedButtonRow(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                sortLoansViewModel.tags.forEachIndexed { index, label ->
+                    SegmentedButton(
+                        shape = SegmentedButtonDefaults.itemShape(
+                            index = index, count = sortLoansViewModel.tags.size
+                        ),
+                        onCheckedChange = {
+                            label.title?.let { it1 -> sortLoansViewModel.onSelectTag(it1) }
+                        },
+                        checked = sortLoansViewModel.isSelectedTag(label.title),
+                    ) {
+                        Text(
+                            text = label.title ?: "", modifier = Modifier.fillMaxWidth(), maxLines = 1
+                        )
+                    }
+                }
+            }
+            GroupedLoansScreen(
+                sortLoansViewModel
+            )
+        }
+
 }
 
 
 @Composable
-fun GroupedLoansScreen(loans: List<LoanAndDate>) {
-    val groupedLoans =
-        remember { mutableStateOf(loans.groupBy { it.dateTime!!.toLocalDate() }) }
+fun GroupedLoansScreen(sortLoansViewModel: SorLoansViewModels) {
 
     LazyColumn(
         modifier = Modifier
@@ -54,17 +80,27 @@ fun GroupedLoansScreen(loans: List<LoanAndDate>) {
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-        groupedLoans.value.forEach { (date, loansForDate) ->
+
+        sortLoansViewModel.filterGroupedLoans.forEach { (date, loansForDate) ->
             item {
-                Text(
-                    text = date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")),
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    ),
-                    modifier = Modifier
-                        .padding(vertical = 8.dp)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")),
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary
+                        ),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(vertical = 8.dp)
+                    )
+                    Button(onClick = { sortLoansViewModel.update(loansForDate) }, enabled = true) {
+                        Text(text = "aceptar")
+                    }
+                }
+
                 HorizontalDivider(
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                     thickness = 1.dp,
@@ -73,15 +109,11 @@ fun GroupedLoansScreen(loans: List<LoanAndDate>) {
             }
 
             items(loansForDate, key = { it.loanId!! }) { loan ->
-                LoanItem(
-                    loan = loan,
-                    onMoveUp = {
-                        moveItem(loansForDate, loan, -1, groupedLoans)
-                    },
-                    onMoveDown = {
-                        moveItem(loansForDate, loan, 1, groupedLoans)
-                    }
-                )
+                LoanItem(loan = loan, onMoveUp = {
+                    sortLoansViewModel.moveItem(loansForDate, loan, -1)
+                }, onMoveDown = {
+                    sortLoansViewModel.moveItem(loansForDate, loan, 1)
+                })
             }
         }
     }
@@ -107,14 +139,13 @@ fun LoanItem(loan: LoanAndDate, onMoveUp: () -> Unit, onMoveDown: () -> Unit) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = loan.name!!,
-                    style = MaterialTheme.typography.bodyLarge.copy(
+                    text = loan.title ?: "", style = MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 )
                 Text(
-                    text = "Amount: ${loan.name}",
+                    text = "Monto total: S./ ${(loan.amount!!)}",
                     style = MaterialTheme.typography.bodyLarge.copy(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     )
@@ -139,22 +170,3 @@ fun LoanItem(loan: LoanAndDate, onMoveUp: () -> Unit, onMoveDown: () -> Unit) {
     }
 }
 
-fun moveItem(
-    loans: List<LoanAndDate>,
-    loan: LoanAndDate,
-    direction: Int,
-    groupedLoans: MutableState<Map<LocalDate, List<LoanAndDate>>>
-) {
-    val currentIndex = loans.indexOf(loan)
-    val newIndex = currentIndex + direction
-
-    if (newIndex in loans.indices) {
-        val mutableList = loans.toMutableList()
-        mutableList.removeAt(currentIndex)
-        mutableList.add(newIndex, loan)
-
-        groupedLoans.value = groupedLoans.value.toMutableMap().apply {
-            put(loan.dateTime!!.toLocalDate(), mutableList)
-        }
-    }
-}

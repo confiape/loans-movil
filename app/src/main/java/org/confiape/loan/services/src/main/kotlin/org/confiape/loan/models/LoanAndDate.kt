@@ -26,6 +26,7 @@ import com.google.gson.annotations.SerializedName
  * @param title 
  * @param amount 
  * @param interest 
+ * @param tag 
  * @param dateTime 
  */
 
@@ -46,6 +47,9 @@ data class LoanAndDate (
 
     @SerializedName("interest")
     val interest: kotlin.Double? = null,
+
+    @SerializedName("tag")
+    val tag: kotlin.String? = null,
 
     @SerializedName("dateTime")
     val dateTime: java.time.OffsetDateTime? = null
