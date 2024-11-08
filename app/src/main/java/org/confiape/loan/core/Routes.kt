@@ -6,5 +6,6 @@ sealed class Routes(val route: String) {
 
     data object Loans : Routes("Loans");
     data object Reports : Routes("Reports");
+    data object SortLoans : Routes("SortReports");
 
 }

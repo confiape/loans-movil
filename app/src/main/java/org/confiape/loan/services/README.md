@@ -64,11 +64,13 @@ All URIs are relative to *http://localhost*
 | *DashBoardApi* | [**apiDashBoardGetTotalLoanAmountByClientGet**](docs/DashBoardApi.md#apidashboardgettotalloanamountbyclientget) | **GET** api/DashBoard/GetTotalLoanAmountByClient |  |
 | *FileApi* | [**apiFilePost**](docs/FileApi.md#apifilepost) | **POST** api/File |  |
 | *LoanApi* | [**apiLoanGet**](docs/LoanApi.md#apiloanget) | **GET** api/Loan |  |
+| *LoanApi* | [**apiLoanGetLoanGroupByDateGet**](docs/LoanApi.md#apiloangetloangroupbydateget) | **GET** api/Loan/GetLoanGroupByDate |  |
 | *LoanApi* | [**apiLoanIdDelete**](docs/LoanApi.md#apiloaniddelete) | **DELETE** api/Loan/{id} |  |
 | *LoanApi* | [**apiLoanIdGet**](docs/LoanApi.md#apiloanidget) | **GET** api/Loan/{id} |  |
 | *LoanApi* | [**apiLoanIdPut**](docs/LoanApi.md#apiloanidput) | **PUT** api/Loan/{id} |  |
 | *LoanApi* | [**apiLoanPost**](docs/LoanApi.md#apiloanpost) | **POST** api/Loan |  |
 | *LoanApi* | [**apiLoanRefinancePost**](docs/LoanApi.md#apiloanrefinancepost) | **POST** api/Loan/Refinance |  |
+| *LoanApi* | [**apiLoanUpdateHoursPost**](docs/LoanApi.md#apiloanupdatehourspost) | **POST** api/Loan/UpdateHours |  |
 | *PaymentApi* | [**apiPaymentGet**](docs/PaymentApi.md#apipaymentget) | **GET** api/Payment |  |
 | *PaymentApi* | [**apiPaymentIdGet**](docs/PaymentApi.md#apipaymentidget) | **GET** api/Payment/{id} |  |
 | *PaymentApi* | [**apiPaymentIdPut**](docs/PaymentApi.md#apipaymentidput) | **PUT** api/Payment/{id} |  |
@@ -101,6 +103,7 @@ All URIs are relative to *http://localhost*
  - [org.confiape.loan.models.CountryDto](docs/CountryDto.md)
  - [org.confiape.loan.models.CreateLoanDto](docs/CreateLoanDto.md)
  - [org.confiape.loan.models.Loan](docs/Loan.md)
+ - [org.confiape.loan.models.LoanAndDate](docs/LoanAndDate.md)
  - [org.confiape.loan.models.LoanType](docs/LoanType.md)
  - [org.confiape.loan.models.LoansByMonthDto](docs/LoansByMonthDto.md)
  - [org.confiape.loan.models.LoansByMonthDtoMetadata](docs/LoansByMonthDtoMetadata.md)

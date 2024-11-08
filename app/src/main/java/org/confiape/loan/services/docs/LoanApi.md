@@ -5,11 +5,13 @@ All URIs are relative to *http://localhost*
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
 | [**apiLoanGet**](LoanApi.md#apiLoanGet) | **GET** api/Loan |  |
+| [**apiLoanGetLoanGroupByDateGet**](LoanApi.md#apiLoanGetLoanGroupByDateGet) | **GET** api/Loan/GetLoanGroupByDate |  |
 | [**apiLoanIdDelete**](LoanApi.md#apiLoanIdDelete) | **DELETE** api/Loan/{id} |  |
 | [**apiLoanIdGet**](LoanApi.md#apiLoanIdGet) | **GET** api/Loan/{id} |  |
 | [**apiLoanIdPut**](LoanApi.md#apiLoanIdPut) | **PUT** api/Loan/{id} |  |
 | [**apiLoanPost**](LoanApi.md#apiLoanPost) | **POST** api/Loan |  |
 | [**apiLoanRefinancePost**](LoanApi.md#apiLoanRefinancePost) | **POST** api/Loan/Refinance |  |
+| [**apiLoanUpdateHoursPost**](LoanApi.md#apiLoanUpdateHoursPost) | **POST** api/Loan/UpdateHours |  |
 
 
 
@@ -48,6 +50,43 @@ launch(Dispatchers.IO) {
 ### Return type
 
 [**BasicLoanDtoPaginationResponse**](BasicLoanDtoPaginationResponse.md)
+
+### Authorization
+
+
+Configure Bearer:
+    ApiClient().setBearerToken("TOKEN")
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain, application/json, text/json
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.confiape.loan.*
+//import org.confiape.loan.infrastructure.*
+//import org.confiape.loan.models.*
+
+val apiClient = ApiClient()
+apiClient.setBearerToken("TOKEN")
+val webService = apiClient.createWebservice(LoanApi::class.java)
+
+launch(Dispatchers.IO) {
+    val result : kotlin.collections.List<LoanAndDate> = webService.apiLoanGetLoanGroupByDateGet()
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**kotlin.collections.List&lt;LoanAndDate&gt;**](LoanAndDate.md)
 
 ### Authorization
 
@@ -252,6 +291,46 @@ launch(Dispatchers.IO) {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **refinanceDto** | [**RefinanceDto**](RefinanceDto.md)|  | [optional] |
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+
+Configure Bearer:
+    ApiClient().setBearerToken("TOKEN")
+
+### HTTP request headers
+
+ - **Content-Type**: application/json, text/json, application/*+json
+ - **Accept**: Not defined
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.confiape.loan.*
+//import org.confiape.loan.infrastructure.*
+//import org.confiape.loan.models.*
+
+val apiClient = ApiClient()
+apiClient.setBearerToken("TOKEN")
+val webService = apiClient.createWebservice(LoanApi::class.java)
+val loanAndDate : kotlin.collections.List<LoanAndDate> =  // kotlin.collections.List<LoanAndDate> | 
+
+launch(Dispatchers.IO) {
+    webService.apiLoanUpdateHoursPost(loanAndDate)
+}
+```
+
+### Parameters
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **loanAndDate** | [**kotlin.collections.List&lt;LoanAndDate&gt;**](LoanAndDate.md)|  | [optional] |
 
 ### Return type
 

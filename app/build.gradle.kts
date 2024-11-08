@@ -92,6 +92,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-auth:21.2.0")
     implementation ("com.auth0:java-jwt:4.2.1")
 
+
     implementation(libs.androidx.core.i18n)
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
 

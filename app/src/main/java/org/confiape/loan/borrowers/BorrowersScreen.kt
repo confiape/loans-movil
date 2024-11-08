@@ -20,7 +20,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -66,6 +69,7 @@ import org.confiape.loan.borrowers.loan.refinance.RefinanceScreen
 import org.confiape.loan.borrowers.loan.refinance.RefinanceViewModel
 import org.confiape.loan.borrowers.reports.ReportsScreen
 import org.confiape.loan.borrowers.reports.ReportsViewModel
+import org.confiape.loan.borrowers.sorReports.SortLoans
 import org.confiape.loan.borrowers.updateBorrower.UpdateBorrowerScreen
 import org.confiape.loan.core.Routes
 import org.confiape.loan.models.BasicBorrowerClientWithTagsAndLoans
@@ -104,6 +108,10 @@ fun BorrowerScreen(
             composable(Routes.Reports.route) {
                 LaunchedEffect(Unit) { reportsViewModel.update() }
                 ReportsScreen(reportsViewModel)
+            }
+            composable(Routes.SortLoans.route) {
+//                LaunchedEffect(Unit) { reportsViewModel.update() }
+                SortLoans()
             }
         }
     }
@@ -179,31 +187,58 @@ fun Content(
 @Composable
 fun TopBar(navigationController: NavHostController) {
     var state by remember { mutableStateOf(0) }
-    val titles = listOf("Prestamos", "Reporte del dia")
+    val titles = listOf("Préstamos", "Reporte del día")
+    var showMenu by remember { mutableStateOf(false) }
 
-    TopAppBar(colors = topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        titleContentColor = MaterialTheme.colorScheme.primary,
-    ), title = {
-        PrimaryTabRow(
-            selectedTabIndex = state, modifier = Modifier.fillMaxWidth()
-        ) {
-            titles.forEachIndexed { index, title ->
-                Tab(selected = state == index, onClick = {
-                    state = index
-                    if (index == 0) {
-                        navigationController.navigate(Routes.Loans.route)
+    TopAppBar(
+        colors = topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ),
+        title = {
+            PrimaryTabRow(
+                selectedTabIndex = state, modifier = Modifier.fillMaxWidth()
+            ) {
+                titles.forEachIndexed { index, title ->
+                    Tab(selected = state == index, onClick = {
+                        state = index
+                        if (index == 0) {
+                            navigationController.navigate(Routes.Loans.route)
+                        }
+                        if (index == 1) {
+                            navigationController.navigate(Routes.Reports.route)
+                        }
+                    }, text = {
+                        Text(title, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    })
+                }
+            }
+        },
+        actions = {
+            IconButton(onClick = { showMenu = true }) {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = "Menú",
+                    modifier = Modifier.size(24.dp) // Tamaño pequeño para el ícono del menú
+                )
+            }
+            DropdownMenu(
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Ordenar Prestamos") },
+                    onClick = {
+                        showMenu = false
+                        navigationController.navigate(Routes.SortLoans.route)
                     }
-                    if (index == 1) {
-                        navigationController.navigate(Routes.Reports.route)
-                    }
-                }, text = {
-                    Text(title, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                })
+                )
             }
         }
-    })
+    )
 }
+
+
 
 @Composable
 fun BottomBar() {

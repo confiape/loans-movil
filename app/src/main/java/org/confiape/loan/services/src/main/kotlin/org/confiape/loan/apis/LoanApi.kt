@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName
 import org.confiape.loan.models.BasicLoanDtoPaginationResponse
 import org.confiape.loan.models.CompleteLoanDto
 import org.confiape.loan.models.CreateLoanDto
+import org.confiape.loan.models.LoanAndDate
 import org.confiape.loan.models.RefinanceDto
 
 interface LoanApi {
@@ -27,6 +28,17 @@ interface LoanApi {
      */
     @GET("api/Loan")
     suspend fun apiLoanGet(@Query("Latitude") latitude: kotlin.Double? = null, @Query("Longitude") longitude: kotlin.Double? = null, @Query("PageSize") pageSize: kotlin.Int? = null, @Query("CurrentPage") currentPage: kotlin.Int? = null, @Query("OrderBy") orderBy: @JvmSuppressWildcards kotlin.collections.List<kotlin.String>? = null): Response<BasicLoanDtoPaginationResponse>
+
+    /**
+     * 
+     * 
+     * Responses:
+     *  - 200: Success
+     *
+     * @return [kotlin.collections.List<LoanAndDate>]
+     */
+    @GET("api/Loan/GetLoanGroupByDate")
+    suspend fun apiLoanGetLoanGroupByDateGet(): Response<kotlin.collections.List<LoanAndDate>>
 
     /**
      * 
@@ -91,5 +103,17 @@ interface LoanApi {
      */
     @POST("api/Loan/Refinance")
     suspend fun apiLoanRefinancePost(@Body refinanceDto: RefinanceDto? = null): Response<Unit>
+
+    /**
+     * 
+     * 
+     * Responses:
+     *  - 200: Success
+     *
+     * @param loanAndDate  (optional)
+     * @return [Unit]
+     */
+    @POST("api/Loan/UpdateHours")
+    suspend fun apiLoanUpdateHoursPost(@Body loanAndDate: kotlin.collections.List<LoanAndDate>? = null): Response<Unit>
 
 }

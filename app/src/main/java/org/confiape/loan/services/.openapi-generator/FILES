@@ -19,6 +19,7 @@ docs/CreateLoanDto.md
 docs/DashBoardApi.md
 docs/FileApi.md
 docs/Loan.md
+docs/LoanAndDate.md
 docs/LoanApi.md
 docs/LoanType.md
 docs/LoansByMonthDto.md
@@ -90,6 +91,7 @@ src/main/kotlin/org/confiape/loan/models/CompleteLoanDto.kt
 src/main/kotlin/org/confiape/loan/models/CountryDto.kt
 src/main/kotlin/org/confiape/loan/models/CreateLoanDto.kt
 src/main/kotlin/org/confiape/loan/models/Loan.kt
+src/main/kotlin/org/confiape/loan/models/LoanAndDate.kt
 src/main/kotlin/org/confiape/loan/models/LoanType.kt
 src/main/kotlin/org/confiape/loan/models/LoansByMonthDto.kt
 src/main/kotlin/org/confiape/loan/models/LoansByMonthDtoMetadata.kt
@@ -142,6 +144,7 @@ src/test/kotlin/org/confiape/loan/models/BorrowerClientTest.kt
 src/test/kotlin/org/confiape/loan/models/CompleteLoanDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/CountryDtoTest.kt
 src/test/kotlin/org/confiape/loan/models/CreateLoanDtoTest.kt
+src/test/kotlin/org/confiape/loan/models/LoanAndDateTest.kt
 src/test/kotlin/org/confiape/loan/models/LoanTest.kt
 src/test/kotlin/org/confiape/loan/models/LoanTypeTest.kt
 src/test/kotlin/org/confiape/loan/models/LoansByMonthDtoMetadataTest.kt
