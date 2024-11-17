@@ -1,7 +1,3 @@
-@file:OptIn(
-    ExperimentalMaterial3Api::class
-)
-
 package org.confiape.loan.borrowers
 
 import androidx.compose.foundation.background
@@ -184,6 +180,7 @@ fun Content(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(navigationController: NavHostController) {
     var state by remember { mutableStateOf(0) }

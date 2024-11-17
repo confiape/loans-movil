@@ -1,3 +1,4 @@
+package org.confiape.loan.services
 group 'org.confiape.loan'
 version '1.0.0'
 
